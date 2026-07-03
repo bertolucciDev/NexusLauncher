@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("InspectCmlLib")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+21d787df474af2c26c908461fccf7062d893ef67")]
 [assembly: System.Reflection.AssemblyProductAttribute("InspectCmlLib")]
 [assembly: System.Reflection.AssemblyTitleAttribute("InspectCmlLib")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

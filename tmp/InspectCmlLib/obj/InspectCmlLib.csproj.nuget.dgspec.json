@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj": {}
+    "D:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj": {}
   },
   "projects": {
-    "d:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj": {
+    "D:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj",
+        "projectUniqueName": "D:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj",
         "projectName": "InspectCmlLib",
-        "projectPath": "d:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj",
+        "projectPath": "D:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj",
         "packagesPath": "C:\\Users\\luiso\\.nuget\\packages\\",
-        "outputPath": "d:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\obj\\",
+        "outputPath": "D:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\luiso\\AppData\\Roaming\\NuGet\\NuGet.Config"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Vw2MvA2F1lc=",
+  "dgSpecHash": "NwZpDuO0i+U=",
   "success": true,
-  "projectFilePath": "d:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj",
+  "projectFilePath": "D:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\luiso\\.nuget\\packages\\cmllib.core.commons\\4.0.0\\cmllib.core.commons.4.0.0.nupkg.sha512",
     "C:\\Users\\luiso\\.nuget\\packages\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",

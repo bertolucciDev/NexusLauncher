@@ -1,0 +1,41 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:NexusLauncher.ViewModels"
+    x:Class="NexusLauncher.Views.PlayView"
+    x:DataType="vm:PlayViewModel">
+
+    <Border Background="#161616" CornerRadius="16" Padding="24" MaxWidth="620">
+        <StackPanel Spacing="16">
+            <TextBlock Text="Minecraft"
+                       Foreground="White"
+                       FontSize="28"
+                       FontWeight="SemiBold" />
+
+            <TextBox Text="{Binding Nickname, Mode=TwoWay}"
+                     PlaceholderText="Nickname" />
+
+            <ComboBox ItemsSource="{Binding Versions}"
+                      SelectedItem="{Binding SelectedVersion, Mode=TwoWay}"
+                      HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Id}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <Button Content="{Binding ButtonText}"
+                    Command="{Binding PrimaryActionCommand}"
+                    HorizontalAlignment="Stretch" />
+
+            <Border Padding="10" Background="#222" CornerRadius="8">
+                <TextBlock Text="{Binding Status}"
+                           Foreground="#9bb0c8" />
+            </Border>
+
+            <TextBlock Text="{Binding StateStyle}"
+                       Foreground="#7ce1c4" />
+        </StackPanel>
+    </Border>
+</UserControl>

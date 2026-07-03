@@ -1,0 +1,72 @@
+{
+  "format": 1,
+  "restore": {
+    "d:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj": {}
+  },
+  "projects": {
+    "d:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "d:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj",
+        "projectName": "InspectCmlLib",
+        "projectPath": "d:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\InspectCmlLib.csproj",
+        "packagesPath": "C:\\Users\\luiso\\.nuget\\packages\\",
+        "outputPath": "d:\\Projetos\\NexusLauncher\\NexusLauncher\\tmp\\InspectCmlLib\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\luiso\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "CmlLib.Core.Commons": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.422/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

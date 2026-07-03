@@ -1,0 +1,21 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:NexusLauncher.ViewModels"
+    x:Class="NexusLauncher.Views.SettingsView"
+    x:DataType="vm:SettingsViewModel">
+
+    <Border Background="#161616" CornerRadius="16" Padding="24">
+        <StackPanel Spacing="12">
+            <TextBlock Text="Configurações"
+                       Foreground="White"
+                       FontSize="28"
+                       FontWeight="SemiBold" />
+
+            <TextBlock Text="{Binding JavaPath}"
+                       Foreground="#9bb0c8" />
+            <TextBlock Text="{Binding MinecraftDirectory}"
+                       Foreground="#9bb0c8" />
+        </StackPanel>
+    </Border>
+</UserControl>

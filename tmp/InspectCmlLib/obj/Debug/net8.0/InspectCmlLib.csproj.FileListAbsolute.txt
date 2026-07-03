@@ -1,0 +1,17 @@
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\bin\Debug\net8.0\InspectCmlLib.exe
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\bin\Debug\net8.0\InspectCmlLib.deps.json
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\bin\Debug\net8.0\InspectCmlLib.runtimeconfig.json
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\bin\Debug\net8.0\InspectCmlLib.dll
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\bin\Debug\net8.0\InspectCmlLib.pdb
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\obj\Debug\net8.0\InspectCmlLib.GeneratedMSBuildEditorConfig.editorconfig
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\obj\Debug\net8.0\InspectCmlLib.AssemblyInfoInputs.cache
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\obj\Debug\net8.0\InspectCmlLib.AssemblyInfo.cs
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\obj\Debug\net8.0\InspectCmlLib.csproj.CoreCompileInputs.cache
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\obj\Debug\net8.0\InspectCmlLib.dll
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\obj\Debug\net8.0\refint\InspectCmlLib.dll
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\obj\Debug\net8.0\InspectCmlLib.pdb
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\obj\Debug\net8.0\InspectCmlLib.genruntimeconfig.cache
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\obj\Debug\net8.0\ref\InspectCmlLib.dll
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\bin\Debug\net8.0\CmlLib.Core.Commons.dll
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\obj\Debug\net8.0\InspectCmlLib.csproj.AssemblyReference.cache
+d:\Projetos\NexusLauncher\NexusLauncher\tmp\InspectCmlLib\obj\Debug\net8.0\InspectC.EB716D65.Up2Date

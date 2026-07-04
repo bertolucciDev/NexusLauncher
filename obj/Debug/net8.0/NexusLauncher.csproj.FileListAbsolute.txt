@@ -93,3 +93,4 @@ D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\refint\NexusLauncher.dl
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\NexusLauncher.pdb
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\NexusLauncher.genruntimeconfig.cache
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\ref\NexusLauncher.dll
+D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\NexusLauncher.sourcelink.json

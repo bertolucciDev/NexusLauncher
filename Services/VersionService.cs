@@ -1,6 +1,5 @@
 using NexusLauncher.Minecraft;
 using NexusLauncher.Models;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

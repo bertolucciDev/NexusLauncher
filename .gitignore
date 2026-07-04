@@ -1,0 +1,8 @@
+dist/*
+bin/*
+bin\*
+obj/*
+obj\*
+*.user
+*.suo
+*.cache         

@@ -1,13 +1,11 @@
-<UserControl
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:vm="using:NexusLauncher.ViewModels"
-    x:Class="NexusLauncher.Views.ModsView"
-    x:DataType="vm:ModsViewModel">
-    <Border Background="#242831" CornerRadius="24" Padding="24">
-        <StackPanel Spacing="12">
-            <TextBlock Text="{Binding Title}" Foreground="White" FontSize="34" FontWeight="SemiBold" />
-            <TextBlock Text="{Binding Message}" Foreground="#9BB0C8" />
-        </StackPanel>
-    </Border>
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:NexusLauncher.ViewModels" x:Class="NexusLauncher.Views.ModsView" x:DataType="vm:ModsViewModel">
+    <Grid RowDefinitions="Auto,*" RowSpacing="22">
+        <StackPanel Spacing="6"><TextBlock Text="Downloads" Foreground="White" FontSize="36" FontWeight="SemiBold"/><TextBlock Text="Acompanhe instalações, atualizações e arquivos sem janelas separadas." Foreground="#8B98AA"/></StackPanel>
+        <Border Grid.Row="1" Background="#171D28" CornerRadius="24" Padding="24"><StackPanel Spacing="16">
+            <TextBlock Text="Fila de downloads" Foreground="White" FontSize="24" FontWeight="SemiBold" />
+            <ProgressBar Minimum="0" Maximum="100" Value="0" Height="10" />
+            <Grid ColumnDefinitions="Auto,*,Auto"><TextBlock Text="0%" Foreground="#7CE1C4"/><TextBlock Grid.Column="1" Text="Nenhum arquivo em download" Foreground="#A6B5CB" HorizontalAlignment="Center"/><TextBlock Grid.Column="2" Text="--:--" Foreground="#8B98AA"/></Grid>
+            <TextBlock Text="Quando um download começar, esta área mostrará velocidade, tamanho restante, tempo estimado e arquivo atual." Foreground="#8B98AA" TextWrapping="Wrap" />
+        </StackPanel></Border>
+    </Grid>
 </UserControl>

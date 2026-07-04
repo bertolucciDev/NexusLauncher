@@ -4,6 +4,6 @@ namespace NexusLauncher.ViewModels;
 
 public class ModsViewModel : ViewModelBase
 {
-    public string Title => "Mods";
-    public string Message => "Gerenciamento de mods será implementado sobre Minecraft/Mods/.";
+    public string Title => "Downloads";
+    public string Message => "Acompanhe downloads, atualizações e instalações em uma fila integrada.";
 }

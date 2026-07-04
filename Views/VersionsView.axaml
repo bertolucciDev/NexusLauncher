@@ -1,0 +1,69 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:NexusLauncher.ViewModels"
+    xmlns:models="using:NexusLauncher.Models"
+    x:Class="NexusLauncher.Views.VersionsView"
+    x:DataType="vm:VersionsViewModel">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="VersionCardTemplate" x:DataType="models:MinecraftVersionInfo">
+            <Border Background="#242831" CornerRadius="16" Padding="16" Margin="0,0,0,10">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                    <TextBlock Text="{Binding BadgeIcon}" FontSize="22" VerticalAlignment="Top" />
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="{Binding Id}" Foreground="White" FontSize="17" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding BaseVersionText}" Foreground="#9BB0C8" />
+                        <TextBlock Text="{Binding FriendlyType}" Foreground="#7CE1C4" />
+                    </StackPanel>
+                    <Button Grid.Column="2"
+                            Content="{Binding FavoriteIcon}"
+                            Command="{Binding $parent[UserControl].DataContext.ToggleFavoriteCommand}"
+                            CommandParameter="{Binding}"
+                            VerticalAlignment="Top" />
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="18">
+        <StackPanel Spacing="8">
+            <TextBlock Text="Versions" Foreground="White" FontSize="34" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding Status}" Foreground="#9BB0C8" />
+        </StackPanel>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,280" ColumnSpacing="16">
+            <TextBox Text="{Binding SearchText, Mode=TwoWay}"
+                     Watermark="Pesquisar versão..." />
+            <Border Grid.Column="1" Background="#242831" CornerRadius="14" Padding="14" IsVisible="{Binding HasLastPlayedVersion}">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Última versão jogada" Foreground="#9BB0C8" FontSize="12" />
+                    <TextBlock Text="{Binding LastPlayedVersionName}" Foreground="White" FontWeight="SemiBold" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <TabControl Grid.Row="2">
+            <TabItem Header="Releases">
+                <ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding Releases}" ItemTemplate="{StaticResource VersionCardTemplate}" />
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Modded">
+                <ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding Modded}" ItemTemplate="{StaticResource VersionCardTemplate}" />
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="OptiFine">
+                <ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding OptiFine}" ItemTemplate="{StaticResource VersionCardTemplate}" />
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Installed">
+                <ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding Installed}" ItemTemplate="{StaticResource VersionCardTemplate}" />
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

@@ -5,6 +5,7 @@ using NexusLauncher.Minecraft;
 using NexusLauncher.Storage;
 using NexusLauncher.ViewModels.Base;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NexusLauncher.ViewModels;
@@ -12,6 +13,7 @@ namespace NexusLauncher.ViewModels;
 public partial class PlayViewModel : ViewModelBase
 {
     private readonly MinecraftService _minecraft = new();
+    private readonly NexusLauncher.Services.VersionService _versionService = new();
     private readonly SettingsStorage _settingsStorage = new();
 
     [ObservableProperty]
@@ -21,7 +23,7 @@ public partial class PlayViewModel : ViewModelBase
     private string nickname = "Player";
 
     [ObservableProperty]
-    private string? selectedVersion;
+    private MinecraftVersionInfo? selectedVersion;
 
     [ObservableProperty]
     private string buttonText = "Instalar";
@@ -38,51 +40,48 @@ public partial class PlayViewModel : ViewModelBase
         UpdateButtonText();
     }
 
-    partial void OnSelectedVersionChanged(string? value)
+    partial void OnSelectedVersionChanged(MinecraftVersionInfo? value)
     {
         UpdateButtonText();
     }
 
-    private Task LoadVersionsAsync()
+    private async Task LoadVersionsAsync()
     {
         StateStyle = "Loading";
-        Status = "Buscando versões...";
-
-        var installed = _minecraft.GetInstalledVersions();
-        var versions = new[] { "1.20.1", "1.20.4", "1.20.6", "1.21" };
+        Status = "Buscando versões oficiais...";
 
         Versions.Clear();
+        var versions = await _versionService.GetOfficialVersionsAsync();
         foreach (var version in versions)
         {
-            Versions.Add(new MinecraftVersionInfo
-            {
-                Id = version,
-                Type = "release",
-                IsInstalled = installed.Contains(version)
-            });
+            version.IsInstalled = _minecraft.IsVersionInstalled(version.Id);
+            Versions.Add(version);
         }
 
-        if (Versions.Count > 0)
-            SelectedVersion = Versions[0].Id;
-
-        StateStyle = "Ready";
-        Status = "Versões carregadas";
+        SelectedVersion = Versions.FirstOrDefault(v => v.IsInstalled) ?? Versions.FirstOrDefault();
+        StateStyle = Versions.Count > 0 ? "Ready" : "Error";
+        Status = Versions.Count > 0 ? "Versões carregadas" : "Não foi possível carregar versões";
         UpdateButtonText();
-        return Task.CompletedTask;
     }
 
     private void UpdateButtonText()
     {
-        var version = SelectedVersion;
+        var version = SelectedVersion?.Id;
+        if (!_minecraft.IsJavaReady())
+        {
+            ButtonText = "Instalar Java";
+            return;
+        }
+
         ButtonText = string.IsNullOrWhiteSpace(version)
-            ? "Selecionar"
-            : (_minecraft.IsVersionInstalled(version) ? "Jogar" : "Instalar");
+            ? "Selecionar versão"
+            : (_minecraft.IsVersionInstalled(version) ? "Jogar" : "Instalar Minecraft");
     }
 
     [RelayCommand]
     public async Task PrimaryAction()
     {
-        if (string.IsNullOrWhiteSpace(SelectedVersion))
+        if (string.IsNullOrWhiteSpace(SelectedVersion?.Id))
         {
             Status = "Selecione uma versão";
             StateStyle = "Error";
@@ -90,14 +89,16 @@ public partial class PlayViewModel : ViewModelBase
             return;
         }
 
+        var selectedVersion = SelectedVersion!;
         _settingsStorage.Save(Nickname);
-        ButtonText = _minecraft.IsVersionInstalled(SelectedVersion) ? "Jogar" : "Instalar";
+        ButtonText = _minecraft.IsVersionInstalled(selectedVersion.Id) ? "Jogar" : "Instalar Minecraft";
         Status = "Preparando Minecraft...";
         StateStyle = "Loading";
 
         try
         {
-            var ready = await _minecraft.EnsureVersionReadyAsync(SelectedVersion, Nickname);
+            var ready = await _minecraft.EnsureVersionReadyAsync(selectedVersion.Id, Nickname);
+            selectedVersion.IsInstalled = ready || _minecraft.IsVersionInstalled(selectedVersion.Id);
             Status = ready ? "Minecraft pronto para iniciar" : _minecraft.GetStatusMessage();
             StateStyle = ready ? "Ready" : "Error";
             UpdateButtonText();

@@ -9,10 +9,11 @@ namespace NexusLauncher.Minecraft;
 public class MinecraftService
 {
     private readonly JavaManager _javaManager = new();
-    private readonly VersionManager _versionManager = new();
-    private readonly LaunchManager _launchManager = new();
+    private readonly VersionManager _versionManager = new(MinecraftPaths.GamePath);
+    private readonly LaunchManager _launchManager = new(MinecraftPaths.GamePath);
     private string _statusMessage = "Pronto";
 
+    public string MinecraftDirectory => MinecraftPaths.Root;
     public string? JavaPath => _javaManager.FindJavaPath();
 
     public bool IsJavaReady() => _javaManager.IsJava17OrHigher(JavaPath);
@@ -37,24 +38,24 @@ public class MinecraftService
     {
         if (!IsJavaReady() || string.IsNullOrWhiteSpace(JavaPath))
         {
-            _statusMessage = "Java não encontrado";
+            _statusMessage = "Java 17+ não encontrado. Instale o Java e tente novamente.";
             return false;
         }
 
         if (!IsVersionInstalled(version))
         {
-            _statusMessage = "Baixando versão...";
+            _statusMessage = "Baixando e instalando Minecraft...";
             var installed = await InstallVersionAsync(version);
             if (string.IsNullOrWhiteSpace(installed))
             {
-                _statusMessage = "Falha ao instalar a versão";
+                _statusMessage = "Falha ao instalar a versão selecionada.";
                 return false;
             }
         }
 
         _statusMessage = "Iniciando Minecraft...";
         var launched = await _launchManager.LaunchAsync(version, username, JavaPath);
-        _statusMessage = launched ? "Minecraft iniciado" : "Falha ao iniciar Minecraft";
+        _statusMessage = launched ? "Minecraft iniciado" : "Falha ao iniciar Minecraft. Verifique os logs em Minecraft/Launch/.";
         return launched;
     }
 

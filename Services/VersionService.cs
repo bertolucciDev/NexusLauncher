@@ -1,7 +1,7 @@
 using NexusLauncher.Models;
-using System;
 using System.Collections.Generic;
 using System.IO;
+using NexusLauncher.Minecraft;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -12,8 +12,7 @@ public class VersionService
 {
     private readonly HttpClient _httpClient = new();
 
-    private readonly string versionsPath =
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Minecraft", "Versions");
+    private readonly string versionsPath = MinecraftPaths.GamePath.Versions;
 
     public VersionService()
     {

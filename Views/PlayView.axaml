@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:NexusLauncher.ViewModels"
+    xmlns:models="using:NexusLauncher.Models"
     x:Class="NexusLauncher.Views.PlayView"
     x:DataType="vm:PlayViewModel">
 
@@ -19,8 +20,12 @@
                       SelectedItem="{Binding SelectedVersion, Mode=TwoWay}"
                       HorizontalAlignment="Stretch">
                 <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Id}" />
+                    <DataTemplate x:DataType="models:MinecraftVersionInfo">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="{Binding Id}" />
+                            <TextBlock Text="{Binding Type}" Foreground="#7C8794" />
+                            <TextBlock Text="Instalado" Foreground="#7CE1C4" IsVisible="{Binding IsInstalled}" />
+                        </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>

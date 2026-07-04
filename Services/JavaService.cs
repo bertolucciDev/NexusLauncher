@@ -1,27 +1,11 @@
-using System;
-using System.IO;
+using NexusLauncher.Minecraft.Java;
+using System.Collections.Generic;
 
 namespace NexusLauncher.Services;
 
 public class JavaService
 {
-    public string? FindJavaPath()
-    {
-        var javaHome = Environment.GetEnvironmentVariable("JAVA_HOME");
-        if (!string.IsNullOrWhiteSpace(javaHome))
-        {
-            var candidate = Path.Combine(javaHome, "bin", OperatingSystem.IsWindows() ? "java.exe" : "java");
-            if (File.Exists(candidate)) return candidate;
-        }
-
-        foreach (var pathValue in Environment.GetEnvironmentVariable("Path")?.Split(Path.PathSeparator) ?? Array.Empty<string>())
-        {
-            if (string.IsNullOrWhiteSpace(pathValue)) continue;
-
-            var candidate = Path.Combine(pathValue, OperatingSystem.IsWindows() ? "java.exe" : "java");
-            if (File.Exists(candidate)) return candidate;
-        }
-
-        return null;
-    }
+    private readonly JavaManager _javaManager = new();
+    public string? FindJavaPath(int minimumMajor = 17) => _javaManager.FindJavaPath(minimumMajor);
+    public IReadOnlyList<JavaInstallation> FindInstalledJavas() => _javaManager.FindInstalledJavas();
 }

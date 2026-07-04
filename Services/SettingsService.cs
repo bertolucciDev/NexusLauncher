@@ -59,6 +59,9 @@ public class SettingsService
         settings.Resolution = string.IsNullOrWhiteSpace(settings.Resolution) ? "1280x720" : settings.Resolution;
         settings.FavoriteVersions ??= new System.Collections.Generic.List<string>();
         settings.LastPlayedVersion = settings.LastPlayedVersion ?? string.Empty;
+        settings.LastVersionCategory = string.IsNullOrWhiteSpace(settings.LastVersionCategory) ? "Releases" : settings.LastVersionCategory;
+        settings.JavaPath = settings.JavaPath ?? string.Empty;
+        settings.Theme = string.IsNullOrWhiteSpace(settings.Theme) ? "Dark" : settings.Theme;
         return settings;
     }
 }

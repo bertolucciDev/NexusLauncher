@@ -13,7 +13,14 @@ public class MinecraftVersionInfo
     public bool IsFavorite { get; set; }
     public bool IsLastPlayed { get; set; }
     public string DisplayName => Id;
-    public string FriendlyType => Category == MinecraftVersionCategory.Release ? "Release" : Loader;
+    public string FriendlyType => Category switch
+    {
+        MinecraftVersionCategory.Release => "Release",
+        MinecraftVersionCategory.Snapshot => "Snapshot",
+        MinecraftVersionCategory.Modpack => "Modpack",
+        MinecraftVersionCategory.Custom => "Custom",
+        _ => Loader
+    };
     public string BaseVersionText => string.IsNullOrWhiteSpace(BaseVersion) ? FriendlyType : $"Minecraft {BaseVersion}";
     public string FavoriteIcon => IsFavorite ? "⭐" : "☆";
 }

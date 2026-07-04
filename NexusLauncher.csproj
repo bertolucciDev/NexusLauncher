@@ -11,8 +11,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-    <AvaloniaResource Include="Assets\**" />    <Compile Remove="tmp\**\*.cs" />  </ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+    <Compile Remove="tmp\**\*.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="12.0.5" />

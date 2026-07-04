@@ -1,70 +1,48 @@
-using System;
+using CmlLib.Core;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace NexusLauncher.Minecraft.Versions;
 
 public class VersionManager
 {
-    private readonly string _root;
-    private readonly HttpClient _httpClient = new();
+    private readonly MinecraftLauncher _launcher;
+    private readonly MinecraftPath _path;
 
-    public VersionManager(string? root = null)
+    public VersionManager(MinecraftPath? path = null)
     {
-        _root = root ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".minecraft", "versions");
-        Directory.CreateDirectory(_root);
+        _path = path ?? MinecraftPaths.GamePath;
+        _launcher = new MinecraftLauncher(_path);
     }
 
     public List<string> GetInstalledVersions()
     {
-        return Directory.GetDirectories(_root)
+        if (!Directory.Exists(_path.Versions))
+            return new List<string>();
+
+        return Directory.GetDirectories(_path.Versions)
             .Select(Path.GetFileName)
             .Where(name => !string.IsNullOrWhiteSpace(name))
-            .OrderBy(name => name)
+            .OrderByDescending(name => name)
             .ToList()!;
     }
 
     public bool IsInstalled(string version)
     {
-        return Directory.Exists(Path.Combine(_root, version));
+        if (string.IsNullOrWhiteSpace(version))
+            return false;
+
+        return File.Exists(_path.GetVersionJsonPath(version)) && File.Exists(_path.GetVersionJarPath(version));
     }
 
     public async Task<string?> DownloadVersionAsync(string version)
     {
-        var manifestUrl = $"https://launchermeta.mojang.com/mc/game/version_manifest.json";
-        var manifest = await _httpClient.GetStringAsync(manifestUrl);
-        var root = JsonSerializer.Deserialize<VersionManifest>(manifest, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        var selected = root?.Versions?.FirstOrDefault(v => v.Id == version);
-        if (selected is null) return null;
+        if (string.IsNullOrWhiteSpace(version))
+            return null;
 
-        var versionJsonUrl = selected.Url;
-        var versionJson = await _httpClient.GetStringAsync(versionJsonUrl);
-        var versionData = JsonSerializer.Deserialize<VersionJson>(versionJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-        var versionDir = Path.Combine(_root, version);
-        Directory.CreateDirectory(versionDir);
-        await File.WriteAllTextAsync(Path.Combine(versionDir, $"{version}.json"), versionJson);
-
-        return versionData?.Id;
-    }
-
-    private sealed class VersionManifest
-    {
-        public List<VersionEntry>? Versions { get; set; }
-    }
-
-    private sealed class VersionEntry
-    {
-        public string? Id { get; set; }
-        public string? Url { get; set; }
-    }
-
-    private sealed class VersionJson
-    {
-        public string? Id { get; set; }
+        await _launcher.InstallAsync(version);
+        return IsInstalled(version) ? version : null;
     }
 }

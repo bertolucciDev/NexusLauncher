@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using NexusLauncher.Services;
 using NexusLauncher.ViewModels.Base;
-using System.IO;
 
 namespace NexusLauncher.ViewModels;
 
@@ -19,6 +18,6 @@ public partial class SettingsViewModel : ViewModelBase
     public SettingsViewModel()
     {
         JavaPath = _javaService.FindJavaPath() ?? "Não detectado";
-        MinecraftDirectory = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), ".minecraft");
+        MinecraftDirectory = _minecraftService.MinecraftDirectory;
     }
 }

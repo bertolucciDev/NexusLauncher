@@ -9,6 +9,8 @@ public class MinecraftService
 
     public string? JavaPath => _innerService.JavaPath;
 
+    public string MinecraftDirectory => _innerService.MinecraftDirectory;
+
     public bool IsJavaReady() => _innerService.IsJavaReady();
 
     public List<string> GetInstalledVersions() => _innerService.GetInstalledVersions();

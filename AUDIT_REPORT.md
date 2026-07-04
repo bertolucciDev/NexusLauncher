@@ -109,3 +109,10 @@ Foram auditadas as camadas de UI, ViewModels, Models, Services, Storage e integr
 3. Implementar `DownloadManagerService` com fila persistente e controles de pausa/cancelamento.
 4. Completar instalação Modrinth (`/project/{id}/version`, hashes, dependências e `.mrpack`).
 5. Consolidar serviços duplicados e padronizar injeção de dependências.
+
+## Atualização: diretório oficial do Minecraft
+
+- O NexusLauncher agora usa por padrão o mesmo diretório do Launcher Oficial da Mojang: `%AppData%\.minecraft` no Windows, `~/.minecraft` no Linux e `~/Library/Application Support/minecraft` no macOS.
+- A pasta `Minecraft/` dentro do diretório do aplicativo passa a ser tratada como área interna do NexusLauncher para cache, temporários, logs, downloads, Java e ícones, não como uma segunda instalação do Minecraft.
+- Todas as operações de versões, assets, libraries, resource packs, shader packs, saves, screenshots e instalação CmlLib passam a ser resolvidas a partir do diretório oficial/configurado.
+- O diretório do Minecraft agora é configurável em Configurações, mantendo o diretório oficial como padrão para compatibilidade com Launcher Oficial, SKLauncher, Prism Launcher, MultiMC, TLauncher e instalações manuais que usem a pasta oficial.

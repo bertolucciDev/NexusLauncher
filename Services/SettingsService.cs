@@ -1,4 +1,5 @@
 using NexusLauncher.Models;
+using NexusLauncher.Minecraft;
 using System;
 using System.IO;
 using System.Text.Json;
@@ -57,6 +58,7 @@ public class SettingsService
         settings.Nickname = string.IsNullOrWhiteSpace(settings.Nickname) ? "Player" : settings.Nickname.Trim();
         settings.AllocatedRamGb = Math.Clamp(settings.AllocatedRamGb, 2, maxRam);
         settings.Resolution = string.IsNullOrWhiteSpace(settings.Resolution) ? "1280x720" : settings.Resolution;
+        settings.MinecraftDirectory = string.IsNullOrWhiteSpace(settings.MinecraftDirectory) ? MinecraftPaths.GetOfficialDefaultRoot() : Environment.ExpandEnvironmentVariables(settings.MinecraftDirectory.Trim());
         settings.FavoriteVersions ??= new System.Collections.Generic.List<string>();
         settings.LastPlayedVersion = settings.LastPlayedVersion ?? string.Empty;
         settings.LastVersionCategory = string.IsNullOrWhiteSpace(settings.LastVersionCategory) ? "Releases" : settings.LastVersionCategory;

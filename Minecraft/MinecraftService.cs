@@ -85,7 +85,7 @@ public class MinecraftService
         var process = await _launchManager.LaunchAsync(version, username, javaPath, settings);
         if (process is null)
         {
-            _statusMessage = "Falha ao iniciar Minecraft. Verifique os logs em Minecraft/Launch/.";
+            _statusMessage = "Falha ao iniciar Minecraft. Verifique os logs internos do NexusLauncher.";
             return null;
         }
 

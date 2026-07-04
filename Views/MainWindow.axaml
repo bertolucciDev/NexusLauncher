@@ -45,7 +45,7 @@
                     <Button Classes="nav" Content="⌂   Home" Click="HomeClick" />
                     <Button Classes="nav" Content="▶   Jogar" Click="PlayClick" />
                     <Button Classes="nav" Content="▦   Versões" Click="VersionsClick" />
-                    <Button Classes="nav" Content="⬡   NexusMods" Click="ModsClick" />
+                    <Button Classes="nav" Content="⬡   Modrinth" Click="ModsClick" />
                     <Button Classes="nav" Content="⚙   Configurações" Click="SettingsClick" />
                 </StackPanel>
 

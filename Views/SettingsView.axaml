@@ -25,8 +25,8 @@
                 <Border Grid.Row="1" Background="#171D28" CornerRadius="22" Padding="22"><StackPanel Spacing="12">
                     <TextBlock Text="DIRETÓRIOS" Foreground="#7CE1C4" FontWeight="SemiBold" />
                     <TextBlock Text="Pasta do Minecraft" Foreground="White" FontSize="18" FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding MinecraftDirectory}" Foreground="#A6B5CB" TextWrapping="Wrap" />
-                    <Button Content="Alterar diretório" HorizontalAlignment="Left" />
+                    <TextBox Text="{Binding MinecraftDirectory, Mode=TwoWay}" Watermark="Diretório oficial do Minecraft" />
+                    <TextBlock Text="Padrão: Windows %AppData%\.minecraft • Linux ~/.minecraft • macOS ~/Library/Application Support/minecraft" Foreground="#8B98AA" TextWrapping="Wrap" />
                 </StackPanel></Border>
 
                 <Border Grid.Row="1" Grid.Column="1" Background="#171D28" CornerRadius="22" Padding="22"><StackPanel Spacing="12">

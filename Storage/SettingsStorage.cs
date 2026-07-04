@@ -1,34 +1,27 @@
-using System;
-using System.IO;
-using System.Text.Json;
+using NexusLauncher.Models;
+using NexusLauncher.Services;
 
 namespace NexusLauncher.Storage;
 
 public class SettingsStorage
 {
-    private readonly string _path;
+    private readonly SettingsService _settingsService;
 
     public SettingsStorage(string? path = null)
     {
-        _path = path ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Storage", "LocalConfig.json");
-        Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
+        _settingsService = new SettingsService(path);
     }
 
     public void Save(string nickname)
     {
-        File.WriteAllText(_path, JsonSerializer.Serialize(new { nickname }));
+        var settings = _settingsService.Load();
+        settings.Nickname = nickname;
+        _settingsService.Save(settings);
     }
 
-    public string LoadNickname()
-    {
-        if (!File.Exists(_path)) return "Player";
-        var json = File.ReadAllText(_path);
-        var data = JsonSerializer.Deserialize<SettingsData>(json);
-        return data?.Nickname ?? "Player";
-    }
+    public string LoadNickname() => _settingsService.Load().Nickname;
 
-    private sealed class SettingsData
-    {
-        public string? Nickname { get; set; }
-    }
+    public LauncherSettings Load() => _settingsService.Load();
+
+    public void Save(LauncherSettings settings) => _settingsService.Save(settings);
 }

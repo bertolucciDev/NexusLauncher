@@ -1,17 +1,21 @@
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NexusLauncher.Models;
-using NexusLauncher.Minecraft;
+using NexusLauncher.Services;
 using NexusLauncher.Storage;
 using NexusLauncher.ViewModels.Base;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NexusLauncher.ViewModels;
 
 public partial class PlayViewModel : ViewModelBase
 {
-    private readonly MinecraftService _minecraft = new();
+    private readonly NexusLauncher.Minecraft.MinecraftService _minecraft = new();
+    private readonly VersionService _versionService = new();
+    private readonly SkinService _skinService = new();
     private readonly SettingsStorage _settingsStorage = new();
 
     [ObservableProperty]
@@ -21,7 +25,10 @@ public partial class PlayViewModel : ViewModelBase
     private string nickname = "Player";
 
     [ObservableProperty]
-    private string? selectedVersion;
+    private Bitmap? avatarImage;
+
+    [ObservableProperty]
+    private MinecraftVersionInfo? selectedVersion;
 
     [ObservableProperty]
     private string buttonText = "Instalar";
@@ -29,60 +36,78 @@ public partial class PlayViewModel : ViewModelBase
     [ObservableProperty]
     private string stateStyle = "Idle";
 
+    [ObservableProperty]
+    private int? minecraftProcessId;
+
     public ObservableCollection<MinecraftVersionInfo> Versions { get; } = new();
 
     public PlayViewModel()
     {
         Nickname = _settingsStorage.LoadNickname();
+        LauncherRuntime.Processes.MinecraftExited += (_, _) =>
+        {
+            MinecraftProcessId = null;
+            Status = "Minecraft fechado";
+            StateStyle = "Ready";
+        };
         _ = LoadVersionsAsync();
+        _ = RefreshSkinAsync();
         UpdateButtonText();
     }
 
-    partial void OnSelectedVersionChanged(string? value)
+    partial void OnSelectedVersionChanged(MinecraftVersionInfo? value)
     {
         UpdateButtonText();
     }
 
-    private Task LoadVersionsAsync()
+    partial void OnNicknameChanged(string value)
+    {
+        _ = RefreshSkinAsync();
+    }
+
+    private async Task LoadVersionsAsync()
     {
         StateStyle = "Loading";
-        Status = "Buscando versões...";
-
-        var installed = _minecraft.GetInstalledVersions();
-        var versions = new[] { "1.20.1", "1.20.4", "1.20.6", "1.21" };
+        Status = "Buscando versões oficiais e locais...";
 
         Versions.Clear();
-        foreach (var version in versions)
-        {
-            Versions.Add(new MinecraftVersionInfo
-            {
-                Id = version,
-                Type = "release",
-                IsInstalled = installed.Contains(version)
-            });
-        }
+        foreach (var version in _versionService.GetInstalledVersionInfos())
+            Versions.Add(version);
 
-        if (Versions.Count > 0)
-            SelectedVersion = Versions[0].Id;
+        var installedIds = Versions.Select(v => v.Id).ToHashSet();
+        var officialVersions = await _versionService.GetOfficialVersionsAsync();
+        foreach (var version in officialVersions.Where(v => !installedIds.Contains(v.Id)).Take(80))
+            Versions.Add(version);
 
-        StateStyle = "Ready";
-        Status = "Versões carregadas";
+        SelectedVersion = Versions.FirstOrDefault(v => v.IsInstalled) ?? Versions.FirstOrDefault();
+        StateStyle = Versions.Count > 0 ? "Ready" : "Error";
+        Status = Versions.Count > 0 ? "Versões carregadas" : "Não foi possível carregar versões";
         UpdateButtonText();
-        return Task.CompletedTask;
+    }
+
+    private async Task RefreshSkinAsync()
+    {
+        AvatarImage = await _skinService.GetAvatarAsync(Nickname);
     }
 
     private void UpdateButtonText()
     {
-        var version = SelectedVersion;
+        var version = SelectedVersion?.Id;
+        if (!_minecraft.IsJavaReady())
+        {
+            ButtonText = "Instalar Java";
+            return;
+        }
+
         ButtonText = string.IsNullOrWhiteSpace(version)
-            ? "Selecionar"
-            : (_minecraft.IsVersionInstalled(version) ? "Jogar" : "Instalar");
+            ? "Selecionar versão"
+            : (_minecraft.IsVersionInstalled(version) ? "Jogar" : "Instalar Minecraft");
     }
 
     [RelayCommand]
     public async Task PrimaryAction()
     {
-        if (string.IsNullOrWhiteSpace(SelectedVersion))
+        if (string.IsNullOrWhiteSpace(SelectedVersion?.Id))
         {
             Status = "Selecione uma versão";
             StateStyle = "Error";
@@ -90,16 +115,22 @@ public partial class PlayViewModel : ViewModelBase
             return;
         }
 
-        _settingsStorage.Save(Nickname);
-        ButtonText = _minecraft.IsVersionInstalled(SelectedVersion) ? "Jogar" : "Instalar";
+        var selectedVersion = SelectedVersion!;
+        var settings = _settingsStorage.Load();
+        settings.Nickname = Nickname;
+        _settingsStorage.Save(settings);
+
+        ButtonText = _minecraft.IsVersionInstalled(selectedVersion.Id) ? "Jogar" : "Instalar Minecraft";
         Status = "Preparando Minecraft...";
         StateStyle = "Loading";
 
         try
         {
-            var ready = await _minecraft.EnsureVersionReadyAsync(SelectedVersion, Nickname);
-            Status = ready ? "Minecraft pronto para iniciar" : _minecraft.GetStatusMessage();
-            StateStyle = ready ? "Ready" : "Error";
+            var process = await _minecraft.PrepareAndLaunchAsync(selectedVersion.Id, Nickname, settings);
+            selectedVersion.IsInstalled = process is not null || _minecraft.IsVersionInstalled(selectedVersion.Id);
+            MinecraftProcessId = process?.Id;
+            Status = process is not null ? $"Minecraft iniciado (PID {process.Id})" : _minecraft.GetStatusMessage();
+            StateStyle = process is not null ? "Playing" : "Error";
             UpdateButtonText();
         }
         catch (System.Exception ex)

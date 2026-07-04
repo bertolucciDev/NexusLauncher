@@ -14,5 +14,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public void GoHome() => Navigation.NavigateTo(new HomeViewModel());
     public void GoPlay() => Navigation.NavigateTo(new PlayViewModel());
+    public void GoMods() => Navigation.NavigateTo(new ModsViewModel());
+    public void GoVersions() => Navigation.NavigateTo(new VersionsViewModel());
     public void GoSettings() => Navigation.NavigateTo(new SettingsViewModel());
 }

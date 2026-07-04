@@ -2,40 +2,65 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:NexusLauncher.ViewModels"
+    xmlns:models="using:NexusLauncher.Models"
     x:Class="NexusLauncher.Views.PlayView"
     x:DataType="vm:PlayViewModel">
 
-    <Border Background="#161616" CornerRadius="16" Padding="24" MaxWidth="620">
-        <StackPanel Spacing="16">
-            <TextBlock Text="Minecraft"
-                       Foreground="White"
-                       FontSize="28"
-                       FontWeight="SemiBold" />
+    <Grid RowDefinitions="Auto,*" RowSpacing="20">
+        <TextBlock Text="Jogar Minecraft"
+                   Foreground="White"
+                   FontSize="34"
+                   FontWeight="SemiBold" />
 
-            <TextBox Text="{Binding Nickname, Mode=TwoWay}"
-                     PlaceholderText="Nickname" />
-
-            <ComboBox ItemsSource="{Binding Versions}"
-                      SelectedItem="{Binding SelectedVersion, Mode=TwoWay}"
-                      HorizontalAlignment="Stretch">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Id}" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-
-            <Button Content="{Binding ButtonText}"
-                    Command="{Binding PrimaryActionCommand}"
-                    HorizontalAlignment="Stretch" />
-
-            <Border Padding="10" Background="#222" CornerRadius="8">
-                <TextBlock Text="{Binding Status}"
-                           Foreground="#9bb0c8" />
+        <Grid Grid.Row="1" ColumnDefinitions="360,*" ColumnSpacing="20">
+            <Border Background="#242831" CornerRadius="24" Padding="24">
+                <StackPanel Spacing="18">
+                    <TextBlock Text="👤 Player Card" Foreground="#7CE1C4" FontWeight="SemiBold" />
+                    <Border Width="148" Height="148" Background="#1B1D21" CornerRadius="20" HorizontalAlignment="Center">
+                        <Image Source="{Binding AvatarImage}" Width="128" Height="128" Stretch="Uniform" />
+                    </Border>
+                    <TextBox Text="{Binding Nickname, Mode=TwoWay}"
+                             Watermark="Username" />
+                    <TextBlock Text="Skin atualizada automaticamente pelo username"
+                               Foreground="#7C8794"
+                               TextWrapping="Wrap" />
+                </StackPanel>
             </Border>
 
-            <TextBlock Text="{Binding StateStyle}"
-                       Foreground="#7ce1c4" />
-        </StackPanel>
-    </Border>
+            <Border Grid.Column="1" Background="#242831" CornerRadius="24" Padding="24">
+                <StackPanel Spacing="18">
+                    <TextBlock Text="Versão" Foreground="#7CE1C4" FontWeight="SemiBold" />
+                    <ComboBox ItemsSource="{Binding Versions}"
+                              SelectedItem="{Binding SelectedVersion, Mode=TwoWay}"
+                              HorizontalAlignment="Stretch">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="models:MinecraftVersionInfo">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="{Binding Id}" Foreground="White" />
+                                    <Border Background="#1B1D21" CornerRadius="8" Padding="6,2">
+                                        <TextBlock Text="{Binding Type}" Foreground="#9BB0C8" FontSize="12" />
+                                    </Border>
+                                    <TextBlock Text="Instalado" Foreground="#7CE1C4" IsVisible="{Binding IsInstalled}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <Button Content="{Binding ButtonText}"
+                            Command="{Binding PrimaryActionCommand}"
+                            HorizontalAlignment="Stretch"
+                            Padding="18" />
+
+                    <Border Padding="14" Background="#1B1D21" CornerRadius="14">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Status" Foreground="#7CE1C4" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding Status}" Foreground="#9BB0C8" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding StateStyle}" Foreground="#7CE1C4" />
+                            <TextBlock Text="{Binding MinecraftProcessId, StringFormat='PID: {0}'}" Foreground="#9BB0C8" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
 </UserControl>

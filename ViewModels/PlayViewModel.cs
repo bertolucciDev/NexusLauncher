@@ -1,7 +1,8 @@
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NexusLauncher.Models;
-using NexusLauncher.Minecraft;
+using NexusLauncher.Services;
 using NexusLauncher.Storage;
 using NexusLauncher.ViewModels.Base;
 using System.Collections.ObjectModel;
@@ -12,8 +13,9 @@ namespace NexusLauncher.ViewModels;
 
 public partial class PlayViewModel : ViewModelBase
 {
-    private readonly MinecraftService _minecraft = new();
-    private readonly NexusLauncher.Services.VersionService _versionService = new();
+    private readonly NexusLauncher.Minecraft.MinecraftService _minecraft = new();
+    private readonly VersionService _versionService = new();
+    private readonly SkinService _skinService = new();
     private readonly SettingsStorage _settingsStorage = new();
 
     [ObservableProperty]
@@ -21,6 +23,9 @@ public partial class PlayViewModel : ViewModelBase
 
     [ObservableProperty]
     private string nickname = "Player";
+
+    [ObservableProperty]
+    private Bitmap? avatarImage;
 
     [ObservableProperty]
     private MinecraftVersionInfo? selectedVersion;
@@ -31,12 +36,22 @@ public partial class PlayViewModel : ViewModelBase
     [ObservableProperty]
     private string stateStyle = "Idle";
 
+    [ObservableProperty]
+    private int? minecraftProcessId;
+
     public ObservableCollection<MinecraftVersionInfo> Versions { get; } = new();
 
     public PlayViewModel()
     {
         Nickname = _settingsStorage.LoadNickname();
+        LauncherRuntime.Processes.MinecraftExited += (_, _) =>
+        {
+            MinecraftProcessId = null;
+            Status = "Minecraft fechado";
+            StateStyle = "Ready";
+        };
         _ = LoadVersionsAsync();
+        _ = RefreshSkinAsync();
         UpdateButtonText();
     }
 
@@ -45,23 +60,34 @@ public partial class PlayViewModel : ViewModelBase
         UpdateButtonText();
     }
 
+    partial void OnNicknameChanged(string value)
+    {
+        _ = RefreshSkinAsync();
+    }
+
     private async Task LoadVersionsAsync()
     {
         StateStyle = "Loading";
-        Status = "Buscando versões oficiais...";
+        Status = "Buscando versões oficiais e locais...";
 
         Versions.Clear();
-        var versions = await _versionService.GetOfficialVersionsAsync();
-        foreach (var version in versions)
-        {
-            version.IsInstalled = _minecraft.IsVersionInstalled(version.Id);
+        foreach (var version in _versionService.GetInstalledVersionInfos())
             Versions.Add(version);
-        }
+
+        var installedIds = Versions.Select(v => v.Id).ToHashSet();
+        var officialVersions = await _versionService.GetOfficialVersionsAsync();
+        foreach (var version in officialVersions.Where(v => !installedIds.Contains(v.Id)).Take(80))
+            Versions.Add(version);
 
         SelectedVersion = Versions.FirstOrDefault(v => v.IsInstalled) ?? Versions.FirstOrDefault();
         StateStyle = Versions.Count > 0 ? "Ready" : "Error";
         Status = Versions.Count > 0 ? "Versões carregadas" : "Não foi possível carregar versões";
         UpdateButtonText();
+    }
+
+    private async Task RefreshSkinAsync()
+    {
+        AvatarImage = await _skinService.GetAvatarAsync(Nickname);
     }
 
     private void UpdateButtonText()
@@ -90,17 +116,21 @@ public partial class PlayViewModel : ViewModelBase
         }
 
         var selectedVersion = SelectedVersion!;
-        _settingsStorage.Save(Nickname);
+        var settings = _settingsStorage.Load();
+        settings.Nickname = Nickname;
+        _settingsStorage.Save(settings);
+
         ButtonText = _minecraft.IsVersionInstalled(selectedVersion.Id) ? "Jogar" : "Instalar Minecraft";
         Status = "Preparando Minecraft...";
         StateStyle = "Loading";
 
         try
         {
-            var ready = await _minecraft.EnsureVersionReadyAsync(selectedVersion.Id, Nickname);
-            selectedVersion.IsInstalled = ready || _minecraft.IsVersionInstalled(selectedVersion.Id);
-            Status = ready ? "Minecraft pronto para iniciar" : _minecraft.GetStatusMessage();
-            StateStyle = ready ? "Ready" : "Error";
+            var process = await _minecraft.PrepareAndLaunchAsync(selectedVersion.Id, Nickname, settings);
+            selectedVersion.IsInstalled = process is not null || _minecraft.IsVersionInstalled(selectedVersion.Id);
+            MinecraftProcessId = process?.Id;
+            Status = process is not null ? $"Minecraft iniciado (PID {process.Id})" : _minecraft.GetStatusMessage();
+            StateStyle = process is not null ? "Playing" : "Error";
             UpdateButtonText();
         }
         catch (System.Exception ex)

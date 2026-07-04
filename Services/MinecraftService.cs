@@ -1,4 +1,6 @@
+using NexusLauncher.Models;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace NexusLauncher.Services;
@@ -11,6 +13,10 @@ public class MinecraftService
 
     public string MinecraftDirectory => _innerService.MinecraftDirectory;
 
+    public int? CurrentProcessId => _innerService.CurrentProcessId;
+
+    public bool IsGameRunning => _innerService.IsGameRunning;
+
     public bool IsJavaReady() => _innerService.IsJavaReady();
 
     public List<string> GetInstalledVersions() => _innerService.GetInstalledVersions();
@@ -22,6 +28,10 @@ public class MinecraftService
     public Task<string?> InstallVersionAsync(string version) => _innerService.InstallVersionAsync(version);
 
     public Task<bool> EnsureVersionReadyAsync(string version, string username) => _innerService.EnsureVersionReadyAsync(version, username);
+
+    public Task<bool> EnsureVersionReadyAsync(string version, string username, LauncherSettings settings) => _innerService.EnsureVersionReadyAsync(version, username, settings);
+
+    public Task<Process?> PrepareAndLaunchAsync(string version, string username, LauncherSettings settings) => _innerService.PrepareAndLaunchAsync(version, username, settings);
 
     public string GetStatusMessage() => _innerService.GetStatusMessage();
 }

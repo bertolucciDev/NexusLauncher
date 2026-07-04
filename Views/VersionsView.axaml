@@ -1,0 +1,51 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:NexusLauncher.ViewModels"
+    xmlns:models="using:NexusLauncher.Models"
+    x:Class="NexusLauncher.Views.VersionsView"
+    x:DataType="vm:VersionsViewModel">
+
+    <StackPanel Spacing="18">
+        <TextBlock Text="Versions" Foreground="White" FontSize="34" FontWeight="SemiBold" />
+        <TextBlock Text="{Binding Status}" Foreground="#9BB0C8" />
+        <TabControl>
+            <TabItem Header="Releases">
+                <ListBox ItemsSource="{Binding Releases}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:MinecraftVersionInfo">
+                            <TextBlock Text="{Binding DisplayName}" Foreground="White" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </TabItem>
+            <TabItem Header="Modded">
+                <ListBox ItemsSource="{Binding Modded}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:MinecraftVersionInfo">
+                            <TextBlock Text="{Binding DisplayName}" Foreground="White" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </TabItem>
+            <TabItem Header="OptiFine">
+                <ListBox ItemsSource="{Binding OptiFine}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:MinecraftVersionInfo">
+                            <TextBlock Text="{Binding DisplayName}" Foreground="White" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </TabItem>
+            <TabItem Header="Installed">
+                <ListBox ItemsSource="{Binding Installed}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:MinecraftVersionInfo">
+                            <TextBlock Text="{Binding DisplayName}" Foreground="White" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </TabItem>
+        </TabControl>
+    </StackPanel>
+</UserControl>

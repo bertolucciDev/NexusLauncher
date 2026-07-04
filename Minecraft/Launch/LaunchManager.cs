@@ -1,7 +1,9 @@
 using CmlLib.Core;
 using CmlLib.Core.Auth;
 using CmlLib.Core.ProcessBuilder;
+using NexusLauncher.Models;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -16,37 +18,55 @@ public class LaunchManager
         _launcher = new MinecraftLauncher(path ?? MinecraftPaths.GamePath);
     }
 
-    public async Task<bool> LaunchAsync(string version, string username, string javaPath)
+    public async Task<Process?> LaunchAsync(string version, string username, string javaPath, LauncherSettings settings)
     {
         try
         {
             var safeUserName = string.IsNullOrWhiteSpace(username) ? "Player" : username.Trim();
+            var (width, height) = ParseResolution(settings.Resolution);
             var option = new MLaunchOption
             {
                 Session = MSession.CreateOfflineSession(safeUserName),
                 JavaPath = javaPath,
-                MaximumRamMb = 2048,
-                ScreenWidth = 1280,
-                ScreenHeight = 720
+                MaximumRamMb = settings.AllocatedRamGb * 1024,
+                ScreenWidth = width,
+                ScreenHeight = height,
+                FullScreen = settings.Fullscreen
             };
 
             var process = await _launcher.BuildProcessAsync(version, option);
             process.EnableRaisingEvents = true;
             process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.WorkingDirectory = MinecraftPaths.Root;
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
             process.OutputDataReceived += (_, args) => AppendLog(version, args.Data);
             process.ErrorDataReceived += (_, args) => AppendLog(version, args.Data);
-            process.Start();
+
+            if (!process.Start())
+                return null;
+
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
-            return true;
+            AppendLog(version, $"Minecraft process started. PID={process.Id}");
+            return process;
         }
         catch (Exception ex)
         {
             AppendLog(version, ex.ToString());
-            return false;
+            return null;
         }
+    }
+
+    private static (int Width, int Height) ParseResolution(string? resolution)
+    {
+        var parts = resolution?.Split('x', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        if (parts?.Length == 2 && int.TryParse(parts[0], out var width) && int.TryParse(parts[1], out var height))
+            return (width, height);
+
+        return (1280, 720);
     }
 
     private static void AppendLog(string version, string? message)

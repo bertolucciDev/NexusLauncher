@@ -1,0 +1,13 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:NexusLauncher.ViewModels"
+    x:Class="NexusLauncher.Views.ModsView"
+    x:DataType="vm:ModsViewModel">
+    <Border Background="#242831" CornerRadius="24" Padding="24">
+        <StackPanel Spacing="12">
+            <TextBlock Text="{Binding Title}" Foreground="White" FontSize="34" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding Message}" Foreground="#9BB0C8" />
+        </StackPanel>
+    </Border>
+</UserControl>

@@ -1,7 +1,8 @@
+using NexusLauncher.Minecraft;
 using NexusLauncher.Models;
 using System.Collections.Generic;
 using System.IO;
-using NexusLauncher.Minecraft;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -11,7 +12,6 @@ namespace NexusLauncher.Services;
 public class VersionService
 {
     private readonly HttpClient _httpClient = new();
-
     private readonly string versionsPath = MinecraftPaths.GamePath.Versions;
 
     public VersionService()
@@ -19,75 +19,120 @@ public class VersionService
         Directory.CreateDirectory(versionsPath);
     }
 
-    // 🔥 VERSÕES OFICIAIS (MOJANG)
     public async Task<List<MinecraftVersionInfo>> GetOfficialVersionsAsync()
     {
         try
         {
-            var url = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
-
+            const string url = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
             var json = await _httpClient.GetStringAsync(url);
-
-            var manifest = JsonSerializer.Deserialize<VersionManifest>(json,
-                new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+            var manifest = JsonSerializer.Deserialize<VersionManifest>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
             if (manifest?.Versions == null)
                 return new List<MinecraftVersionInfo>();
 
-            var installed = GetInstalledVersions();
-
-            var result = new List<MinecraftVersionInfo>();
-
-            foreach (var v in manifest.Versions)
-            {
-                result.Add(new MinecraftVersionInfo
+            var installed = GetInstalledVersions().ToHashSet();
+            return manifest.Versions
+                .Where(v => !string.IsNullOrWhiteSpace(v.Id))
+                .Select(v => new MinecraftVersionInfo
                 {
-                    Id = v.Id ?? "unknown",
+                    Id = v.Id!,
                     Type = v.Type ?? "release",
-                    IsInstalled = installed.Contains(v.Id ?? "")
-                });
-            }
-
-            return result;
+                    IsInstalled = installed.Contains(v.Id!),
+                    Category = MinecraftVersionCategory.Release
+                })
+                .ToList();
         }
         catch
         {
-            // nunca deixar crashar a UI
             return new List<MinecraftVersionInfo>();
         }
     }
 
-    // 📦 VERSÕES INSTALADAS (LOCAL)
     public List<string> GetInstalledVersions()
     {
         if (!Directory.Exists(versionsPath))
             return new List<string>();
 
-        var dirs = Directory.GetDirectories(versionsPath);
-
-        var result = new List<string>();
-
-        foreach (var dir in dirs)
-        {
-            result.Add(Path.GetFileName(dir));
-        }
-
-        return result;
+        return Directory.GetDirectories(versionsPath)
+            .Select(Path.GetFileName)
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .OrderByDescending(name => name)
+            .ToList()!;
     }
 
-    // 📥 CHECK SE INSTALADA
+    public List<MinecraftVersionInfo> GetInstalledVersionInfos()
+    {
+        return GetInstalledVersions()
+            .Select(id => new MinecraftVersionInfo
+            {
+                Id = id,
+                Type = DetectType(id),
+                IsInstalled = true,
+                Category = DetectCategory(id)
+            })
+            .ToList();
+    }
+
+    public List<MinecraftVersionInfo> GetModdedVersions()
+    {
+        return GetInstalledVersionInfos()
+            .Where(v => v.Category is MinecraftVersionCategory.Modded or MinecraftVersionCategory.OptiFine)
+            .ToList();
+    }
+
+    public List<MinecraftVersionInfo> GetOptiFineVersions()
+    {
+        return GetInstalledVersionInfos()
+            .Where(v => v.Category == MinecraftVersionCategory.OptiFine)
+            .ToList();
+    }
+
     public bool IsVersionInstalled(string version)
     {
-        var path = Path.Combine(versionsPath, version);
-        return Directory.Exists(path);
+        return !string.IsNullOrWhiteSpace(version) && Directory.Exists(Path.Combine(versionsPath, version));
     }
 
-    // ─────────────────────────────
-    // MODELS INTERNOS
-    // ─────────────────────────────
+    private MinecraftVersionCategory DetectCategory(string id)
+    {
+        var lower = id.ToLowerInvariant();
+        if (lower.Contains("optifine"))
+            return MinecraftVersionCategory.OptiFine;
+
+        if (lower.Contains("forge") || lower.Contains("fabric") || lower.Contains("quilt") || lower.Contains("tl") || HasCustomJson(id))
+            return MinecraftVersionCategory.Modded;
+
+        return MinecraftVersionCategory.Installed;
+    }
+
+    private string DetectType(string id)
+    {
+        return DetectCategory(id) switch
+        {
+            MinecraftVersionCategory.OptiFine => "optifine",
+            MinecraftVersionCategory.Modded => "modded",
+            _ => "installed"
+        };
+    }
+
+    private bool HasCustomJson(string id)
+    {
+        var jsonPath = Path.Combine(versionsPath, id, $"{id}.json");
+        if (!File.Exists(jsonPath))
+            return false;
+
+        try
+        {
+            var json = File.ReadAllText(jsonPath).ToLowerInvariant();
+            return json.Contains("forge") || json.Contains("fabric-loader") || json.Contains("optifine") || json.Contains("tlauncher") || json.Contains("inheritsfrom");
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
     private sealed class VersionManifest
     {

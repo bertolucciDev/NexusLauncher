@@ -12,5 +12,10 @@ public class LauncherSettings
     public bool Fullscreen { get; set; }
     public string Resolution { get; set; } = "1280x720";
     public string LastPlayedVersion { get; set; } = string.Empty;
+    public string MinecraftDirectory { get; set; } = string.Empty;
+    public string LastVersionCategory { get; set; } = "Releases";
+    public string JavaPath { get; set; } = string.Empty;
+    public string Theme { get; set; } = "Dark";
+    public bool KeepLauncherInBackground { get; set; } = true;
     public List<string> FavoriteVersions { get; set; } = new();
 }

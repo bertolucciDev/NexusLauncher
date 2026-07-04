@@ -1,59 +1,59 @@
-<UserControl
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:vm="using:NexusLauncher.ViewModels"
-    x:Class="NexusLauncher.Views.SettingsView"
-    x:DataType="vm:SettingsViewModel">
-
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:NexusLauncher.ViewModels" x:Class="NexusLauncher.Views.SettingsView" x:DataType="vm:SettingsViewModel">
     <ScrollViewer>
         <StackPanel Spacing="18">
-            <TextBlock Text="Configurações"
-                       Foreground="White"
-                       FontSize="32"
-                       FontWeight="SemiBold" />
+            <StackPanel Spacing="6">
+                <TextBlock Text="Configurações" Foreground="White" FontSize="36" FontWeight="SemiBold" />
+                <TextBlock Text="Ajustes organizados para desempenho, Java, diretórios e comportamento." Foreground="#8B98AA" />
+            </StackPanel>
 
-            <Border Background="#242831" CornerRadius="18" Padding="22">
-                <StackPanel Spacing="14">
-                    <TextBlock Text="💾 RAM ALLOCATION" Foreground="#7CE1C4" FontWeight="SemiBold" />
-                    <Slider Minimum="2"
-                            Maximum="{Binding MaxRamGb}"
-                            Value="{Binding AllocatedRamGb, Mode=TwoWay}" />
-                    <TextBlock Text="{Binding AllocatedRamText}" Foreground="White" />
-                </StackPanel>
-            </Border>
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="18" RowSpacing="18">
+                <Border Background="#171D28" CornerRadius="22" Padding="22"><StackPanel Spacing="14">
+                    <TextBlock Text="DESEMPENHO" Foreground="#7CE1C4" FontWeight="SemiBold" />
+                    <TextBlock Text="Memória RAM" Foreground="White" FontSize="18" FontWeight="SemiBold" />
+                    <Slider Minimum="2" Maximum="{Binding MaxRamGb}" Value="{Binding AllocatedRamGb, Mode=TwoWay}" />
+                    <TextBlock Text="{Binding AllocatedRamText}" Foreground="#A6B5CB" />
+                    <TextBox Watermark="Argumentos JVM adicionais" />
+                </StackPanel></Border>
 
-            <Border Background="#242831" CornerRadius="18" Padding="22">
-                <StackPanel Spacing="12">
-                    <TextBlock Text="⚙ Launcher Behavior" Foreground="#7CE1C4" FontWeight="SemiBold" />
+                <Border Grid.Column="1" Background="#171D28" CornerRadius="22" Padding="22"><StackPanel Spacing="12">
+                    <TextBlock Text="JAVA" Foreground="#7CE1C4" FontWeight="SemiBold" />
+                    <TextBlock Text="Java selecionado" Foreground="White" FontSize="18" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding JavaPath}" Foreground="#A6B5CB" TextWrapping="Wrap" />
+                    <CheckBox Content="Baixar Java automaticamente quando necessário" Foreground="White" />
+                </StackPanel></Border>
+
+                <Border Grid.Row="1" Background="#171D28" CornerRadius="22" Padding="22"><StackPanel Spacing="12">
+                    <TextBlock Text="DIRETÓRIOS" Foreground="#7CE1C4" FontWeight="SemiBold" />
+                    <TextBlock Text="Pasta do Minecraft" Foreground="White" FontSize="18" FontWeight="SemiBold" />
+                    <TextBox Text="{Binding MinecraftDirectory, Mode=TwoWay}" Watermark="Diretório oficial do Minecraft" />
+                    <TextBlock Text="Padrão: Windows %AppData%\.minecraft • Linux ~/.minecraft • macOS ~/Library/Application Support/minecraft" Foreground="#8B98AA" TextWrapping="Wrap" />
+                </StackPanel></Border>
+
+                <Border Grid.Row="1" Grid.Column="1" Background="#171D28" CornerRadius="22" Padding="22"><StackPanel Spacing="12">
+                    <TextBlock Text="COMPORTAMENTO" Foreground="#7CE1C4" FontWeight="SemiBold" />
                     <CheckBox Content="Fechar launcher ao iniciar jogo" IsChecked="{Binding CloseLauncherOnGameStart}" Foreground="White" />
                     <CheckBox Content="Reabrir launcher após fechar Minecraft" IsChecked="{Binding ReopenLauncherAfterGameClose}" Foreground="White" />
                     <CheckBox Content="Minimizar ao iniciar jogo" IsChecked="{Binding MinimizeLauncherOnGameStart}" Foreground="White" />
-                </StackPanel>
-            </Border>
+                    <CheckBox Content="Atualizar launcher automaticamente" Foreground="White" />
+                </StackPanel></Border>
 
-            <Border Background="#242831" CornerRadius="18" Padding="22">
-                <StackPanel Spacing="12">
-                    <TextBlock Text="🪟 Window Settings" Foreground="#7CE1C4" FontWeight="SemiBold" />
+                <Border Grid.Row="2" Background="#171D28" CornerRadius="22" Padding="22"><StackPanel Spacing="12">
+                    <TextBlock Text="APARÊNCIA" Foreground="#7CE1C4" FontWeight="SemiBold" />
+                    <ComboBox SelectedIndex="0"><ComboBoxItem Content="Português (Brasil)"/><ComboBoxItem Content="English"/></ComboBox>
+                    <ComboBox SelectedIndex="0"><ComboBoxItem Content="Tema escuro Nexus"/><ComboBoxItem Content="Tema compacto"/></ComboBox>
+                </StackPanel></Border>
+
+                <Border Grid.Row="2" Grid.Column="1" Background="#171D28" CornerRadius="22" Padding="22"><StackPanel Spacing="12">
+                    <TextBlock Text="JANELA DO JOGO" Foreground="#7CE1C4" FontWeight="SemiBold" />
                     <CheckBox Content="Fullscreen" IsChecked="{Binding Fullscreen}" Foreground="White" />
-                    <ComboBox ItemsSource="{Binding Resolutions}"
-                              SelectedItem="{Binding SelectedResolution}"
-                              HorizontalAlignment="Stretch" />
-                </StackPanel>
-            </Border>
+                    <ComboBox ItemsSource="{Binding Resolutions}" SelectedItem="{Binding SelectedResolution}" HorizontalAlignment="Stretch" />
+                </StackPanel></Border>
+            </Grid>
 
-            <Border Background="#242831" CornerRadius="18" Padding="22">
-                <StackPanel Spacing="8">
-                    <TextBlock Text="Java" Foreground="#7CE1C4" FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding JavaPath}" Foreground="#9BB0C8" TextWrapping="Wrap" />
-                    <TextBlock Text="Minecraft" Foreground="#7CE1C4" FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding MinecraftDirectory}" Foreground="#9BB0C8" TextWrapping="Wrap" />
-                </StackPanel>
-            </Border>
-
-            <Button Content="Salvar configurações"
-                    Command="{Binding SaveCommand}"
-                    HorizontalAlignment="Left" />
-            <TextBlock Text="{Binding SaveStatus}" Foreground="#7CE1C4" />
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button Content="Salvar configurações" Command="{Binding SaveCommand}" Background="#7C5CFF" Foreground="White" Padding="18,12" CornerRadius="14" />
+                <TextBlock Text="{Binding SaveStatus}" Foreground="#7CE1C4" VerticalAlignment="Center" />
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

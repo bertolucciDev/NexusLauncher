@@ -62,8 +62,8 @@ public partial class SettingsViewModel : ViewModelBase
         MinimizeLauncherOnGameStart = settings.MinimizeLauncherOnGameStart;
         Fullscreen = settings.Fullscreen;
         SelectedResolution = settings.Resolution;
-        JavaPath = _javaService.FindJavaPath() ?? "Não detectado";
-        MinecraftDirectory = _minecraftService.MinecraftDirectory;
+        JavaPath = string.IsNullOrWhiteSpace(settings.JavaPath) ? _javaService.FindJavaPath() ?? "Não detectado" : settings.JavaPath;
+        MinecraftDirectory = settings.MinecraftDirectory;
     }
 
     partial void OnAllocatedRamGbChanged(double value)
@@ -81,6 +81,8 @@ public partial class SettingsViewModel : ViewModelBase
         settings.MinimizeLauncherOnGameStart = MinimizeLauncherOnGameStart;
         settings.Fullscreen = Fullscreen;
         settings.Resolution = SelectedResolution;
+        settings.MinecraftDirectory = MinecraftDirectory;
+        settings.JavaPath = JavaPath == "Não detectado" ? string.Empty : JavaPath;
         _settingsService.Save(settings);
         SaveStatus = "Configurações salvas";
     }

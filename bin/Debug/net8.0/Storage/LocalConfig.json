@@ -1,1 +1,15 @@
-{"nickname":"Player"}
+{
+  "Nickname": "Foxzinho112",
+  "AllocatedRamGb": 4,
+  "CloseLauncherOnGameStart": true,
+  "ReopenLauncherAfterGameClose": false,
+  "MinimizeLauncherOnGameStart": true,
+  "Fullscreen": false,
+  "Resolution": "1600x900",
+  "LastPlayedVersion": "26.2",
+  "FavoriteVersions": [
+    "1.16",
+    "1.0",
+    "26.2"
+  ]
+}

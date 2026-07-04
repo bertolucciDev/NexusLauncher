@@ -87,10 +87,10 @@ D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\Avalonia\Resources.Inpu
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\Avalonia\resources
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\NexusLauncher.GeneratedMSBuildEditorConfig.editorconfig
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\NexusLauncher.csproj.CoreCompileInputs.cache
+D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\NexusLauncher.sourcelink.json
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\NexusLau.CD656E40.Up2Date
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\NexusLauncher.dll
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\refint\NexusLauncher.dll
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\NexusLauncher.pdb
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\NexusLauncher.genruntimeconfig.cache
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\ref\NexusLauncher.dll
-D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\NexusLauncher.sourcelink.json

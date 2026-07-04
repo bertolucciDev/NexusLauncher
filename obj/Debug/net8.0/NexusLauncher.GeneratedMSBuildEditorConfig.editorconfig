@@ -36,8 +36,14 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 [D:/Projetos/NexusLauncher/NexusLauncher/Views/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[D:/Projetos/NexusLauncher/NexusLauncher/Views/ModsView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [D:/Projetos/NexusLauncher/NexusLauncher/Views/PlayView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [D:/Projetos/NexusLauncher/NexusLauncher/Views/SettingsView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Projetos/NexusLauncher/NexusLauncher/Views/VersionsView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

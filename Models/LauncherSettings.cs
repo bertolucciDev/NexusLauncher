@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace NexusLauncher.Models;
 
 public class LauncherSettings
@@ -9,4 +11,6 @@ public class LauncherSettings
     public bool MinimizeLauncherOnGameStart { get; set; } = true;
     public bool Fullscreen { get; set; }
     public string Resolution { get; set; } = "1280x720";
+    public string LastPlayedVersion { get; set; } = string.Empty;
+    public List<string> FavoriteVersions { get; set; } = new();
 }

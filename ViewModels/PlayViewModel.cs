@@ -58,14 +58,11 @@ public partial class PlayViewModel : ViewModelBase
     [ObservableProperty]
     private string lastUpdateText = "Última atualização — hoje";
 
-    [ObservableProperty]
-    private int? minecraftProcessId;
-
     public ObservableCollection<MinecraftVersionInfo> Versions { get; } = new();
 
-    public string SelectedVersionTitle => SelectedVersion is null ? "Selecione uma versão" : $"Minecraft {SelectedVersion.Id}";
+    public string SelectedVersionTitle => SelectedVersion is null ? "Selecione uma versão" : SelectedVersion.Id;
 
-    public string SelectedVersionKind => SelectedVersion is null ? "Release" : $"{ToFriendlyType(SelectedVersion)} {SelectedVersion.Id}";
+    public string SelectedVersionKind => SelectedVersion is null ? "Release" : $"{SelectedVersion.BadgeIcon} {SelectedVersion.BaseVersionText} • {ToFriendlyType(SelectedVersion)}";
 
     public PlayViewModel()
     {
@@ -148,7 +145,7 @@ public partial class PlayViewModel : ViewModelBase
             return;
 
         HeaderTitle = GetGreeting();
-        HeaderSubtitle = SelectedVersion is null ? Nickname : $"{Nickname} • Minecraft {SelectedVersion.Id}";
+        HeaderSubtitle = SelectedVersion is null ? Nickname : $"{Nickname} • {SelectedVersion.Id}";
         ProgressDetail = string.Empty;
         ProgressSpeed = string.Empty;
         ProgressEta = string.Empty;
@@ -208,6 +205,8 @@ public partial class PlayViewModel : ViewModelBase
             selectedVersion.IsInstalled = process is not null || _minecraft.IsVersionInstalled(selectedVersion.Id);
             if (process is not null)
             {
+                settings.LastPlayedVersion = selectedVersion.Id;
+                _settingsStorage.Save(settings);
                 SetProgress("Concluído", 100, "Abrindo Minecraft", "", "");
                 await Task.Delay(350);
                 IsBusy = false;

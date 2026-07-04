@@ -6,5 +6,14 @@ public class MinecraftVersionInfo
     public string Type { get; set; } = "release";
     public bool IsInstalled { get; set; }
     public MinecraftVersionCategory Category { get; set; } = MinecraftVersionCategory.Release;
-    public string DisplayName => IsInstalled ? $"{Id} • instalado" : Id;
+    public string BaseVersion { get; set; } = string.Empty;
+    public string Loader { get; set; } = "Vanilla";
+    public string LoaderVersion { get; set; } = string.Empty;
+    public string BadgeIcon { get; set; } = "🟩";
+    public bool IsFavorite { get; set; }
+    public bool IsLastPlayed { get; set; }
+    public string DisplayName => Id;
+    public string FriendlyType => Category == MinecraftVersionCategory.Release ? "Release" : Loader;
+    public string BaseVersionText => string.IsNullOrWhiteSpace(BaseVersion) ? FriendlyType : $"Minecraft {BaseVersion}";
+    public string FavoriteIcon => IsFavorite ? "⭐" : "☆";
 }

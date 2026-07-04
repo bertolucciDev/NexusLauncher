@@ -79,8 +79,9 @@
                         <ComboBox.ItemTemplate>
                             <DataTemplate x:DataType="models:MinecraftVersionInfo">
                                 <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="{Binding BadgeIcon}" />
                                     <TextBlock Text="{Binding Id}" Foreground="White" />
-                                    <TextBlock Text="{Binding Type}" Foreground="#9BB0C8" />
+                                    <TextBlock Text="{Binding FriendlyType}" Foreground="#9BB0C8" />
                                 </StackPanel>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>

@@ -91,6 +91,9 @@ public partial class PlayViewModel : ViewModelBase
     partial void OnNicknameChanged(string value)
     {
         ApplyReadyHeader();
+        var settings = _settingsStorage.Load();
+        settings.Nickname = string.IsNullOrWhiteSpace(value) ? "Player" : value.Trim();
+        _settingsStorage.Save(settings);
         _ = RefreshSkinAsync();
     }
 
@@ -108,7 +111,8 @@ public partial class PlayViewModel : ViewModelBase
         foreach (var version in officialVersions.Where(v => !installedIds.Contains(v.Id)).Take(80))
             Versions.Add(version);
 
-        SelectedVersion = Versions.FirstOrDefault(v => v.IsInstalled) ?? Versions.FirstOrDefault();
+        var settings = _settingsStorage.Load();
+        SelectedVersion = Versions.FirstOrDefault(v => v.Id == settings.LastPlayedVersion) ?? Versions.FirstOrDefault(v => v.IsInstalled) ?? Versions.FirstOrDefault();
         IsBusy = false;
         ProgressValue = 0;
         ProgressPercent = "0%";
@@ -128,9 +132,9 @@ public partial class PlayViewModel : ViewModelBase
             return;
 
         var version = SelectedVersion?.Id;
-        if (!_minecraft.IsJavaReady())
+        if (!string.IsNullOrWhiteSpace(version) && !_minecraft.IsJavaReadyFor(version))
         {
-            ButtonText = "INSTALAR";
+            ButtonText = "INSTALAR JAVA";
             return;
         }
 
@@ -177,6 +181,7 @@ public partial class PlayViewModel : ViewModelBase
         }
 
         var selectedVersion = SelectedVersion;
+        var wasInstalled = _minecraft.IsVersionInstalled(selectedVersion.Id);
         var settings = _settingsStorage.Load();
         settings.Nickname = Nickname;
         _settingsStorage.Save(settings);
@@ -186,13 +191,13 @@ public partial class PlayViewModel : ViewModelBase
             ButtonText = _minecraft.IsVersionInstalled(selectedVersion.Id) ? "VERIFICANDO..." : "BAIXANDO...";
             SetProgress("Preparando ambiente", 18, "Verificando Java", "", "");
 
-            if (!_minecraft.IsJavaReady())
+            if (!_minecraft.IsJavaReadyFor(selectedVersion.Id))
             {
-                SetProgress("Instalando Java", 62, "Baixando Java", "", "");
+                SetProgress("Java necessário", 62, "Instalação automática de Java será baixada na próxima etapa", "", "");
                 await Task.Delay(700);
                 IsBusy = false;
                 ApplyReadyHeader();
-                ButtonText = "INSTALAR";
+                ButtonText = "INSTALAR JAVA";
                 return;
             }
 
@@ -201,8 +206,11 @@ public partial class PlayViewModel : ViewModelBase
             else
                 SetProgress("Preparando ambiente", 84, "Carregando perfil", "", "");
 
-            var process = await _minecraft.PrepareAndLaunchAsync(selectedVersion.Id, Nickname, settings);
+            var progress = new Progress<DownloadProgressInfo>(ApplyDownloadProgress);
+            var process = await _minecraft.PrepareAndLaunchAsync(selectedVersion.Id, Nickname, settings, progress);
             selectedVersion.IsInstalled = process is not null || _minecraft.IsVersionInstalled(selectedVersion.Id);
+            if (selectedVersion.IsInstalled && !wasInstalled)
+                await LoadVersionsAsync();
             if (process is not null)
             {
                 settings.LastPlayedVersion = selectedVersion.Id;
@@ -229,12 +237,41 @@ public partial class PlayViewModel : ViewModelBase
         }
     }
 
+    private void ApplyDownloadProgress(DownloadProgressInfo progress)
+    {
+        IsBusy = true;
+        HeaderTitle = progress.State == "Concluído" ? "Instalação concluída" : "Baixando...";
+        ProgressValue = Math.Clamp(progress.Percent, 0, 100);
+        ProgressPercent = $"{ProgressValue:0}%";
+        ProgressDetail = string.IsNullOrWhiteSpace(progress.CurrentFile) ? "Preparando arquivos" : progress.CurrentFile;
+        ProgressSpeed = progress.BytesPerSecond > 0 ? $"{FormatBytes(progress.BytesPerSecond)}/s" : "Calculando velocidade";
+        ProgressEta = progress.Eta.HasValue ? $"Restante: {FormatEta(progress.Eta.Value)}" : "Restante: calculando";
+        ButtonText = progress.State == "Concluído" ? "JOGAR" : "BAIXANDO...";
+    }
+
+    private static string FormatBytes(double bytes)
+    {
+        string[] units = { "B", "KB", "MB", "GB" };
+        var value = bytes;
+        var unit = 0;
+        while (value >= 1024 && unit < units.Length - 1) { value /= 1024; unit++; }
+        return $"{value:0.##} {units[unit]}";
+    }
+
+    private static string FormatEta(TimeSpan eta) => eta <= TimeSpan.Zero ? "0s" : eta.TotalMinutes >= 1 ? $"{eta.TotalMinutes:0} min" : $"{eta.TotalSeconds:0}s";
+
     private static string ToFriendlyType(MinecraftVersionInfo version)
     {
         return version.Category switch
         {
-            MinecraftVersionCategory.Modded => "Modded",
+            MinecraftVersionCategory.Forge => "Forge",
+            MinecraftVersionCategory.NeoForge => "NeoForge",
+            MinecraftVersionCategory.Fabric => "Fabric",
+            MinecraftVersionCategory.Quilt => "Quilt",
             MinecraftVersionCategory.OptiFine => "OptiFine",
+            MinecraftVersionCategory.LiteLoader => "LiteLoader",
+            MinecraftVersionCategory.Modpack => "Modpack",
+            MinecraftVersionCategory.Custom => "Custom",
             _ => version.Type == "release" ? "Release" : version.Type
         };
     }

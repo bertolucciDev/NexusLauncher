@@ -3,7 +3,13 @@ namespace NexusLauncher.Models;
 public enum MinecraftVersionCategory
 {
     Release,
-    Modded,
+    Snapshot,
+    Forge,
+    NeoForge,
+    Fabric,
+    Quilt,
     OptiFine,
-    Installed
+    LiteLoader,
+    Modpack,
+    Custom
 }

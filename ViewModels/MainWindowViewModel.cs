@@ -9,7 +9,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel()
     {
-        Navigation.NavigateTo(new HomeViewModel());
+        Navigation.NavigateTo(new PlayViewModel());
     }
 
     public void GoHome() => Navigation.NavigateTo(new HomeViewModel());

@@ -28,6 +28,12 @@ public class MinecraftService
     public bool IsGameRunning => _processService.IsGameRunning;
 
     public bool IsJavaReady() => _javaManager.IsJava17OrHigher(JavaPath);
+    public bool IsJavaReadyFor(string version)
+    {
+        var requiredJava = _javaManager.GetRequiredJavaMajor(version);
+        var javaPath = _javaManager.FindJavaPath(requiredJava);
+        return !string.IsNullOrWhiteSpace(javaPath) && _javaManager.GetMajorVersion(javaPath) >= requiredJava;
+    }
 
     public string GetJavaStatusMessage()
     {
@@ -43,7 +49,7 @@ public class MinecraftService
 
     public bool IsVersionInstalled(string version) => _versionManager.IsInstalled(version);
 
-    public async Task<string?> InstallVersionAsync(string version) => await _versionManager.DownloadVersionAsync(version);
+    public async Task<string?> InstallVersionAsync(string version, System.IProgress<DownloadProgressInfo>? progress = null) => await _versionManager.DownloadVersionAsync(version, progress);
 
     public async Task<bool> EnsureVersionReadyAsync(string version, string username)
         => await EnsureVersionReadyAsync(version, username, LauncherRuntime.Settings.Load());
@@ -54,9 +60,11 @@ public class MinecraftService
         return process is not null;
     }
 
-    public async Task<Process?> PrepareAndLaunchAsync(string version, string username, LauncherSettings settings)
+    public async Task<Process?> PrepareAndLaunchAsync(string version, string username, LauncherSettings settings, System.IProgress<DownloadProgressInfo>? progress = null)
     {
-        if (!IsJavaReady() || string.IsNullOrWhiteSpace(JavaPath))
+        var requiredJava = _javaManager.GetRequiredJavaMajor(version);
+        var javaPath = string.IsNullOrWhiteSpace(settings.JavaPath) ? _javaManager.FindJavaPath(requiredJava) : settings.JavaPath;
+        if (string.IsNullOrWhiteSpace(javaPath) || _javaManager.GetMajorVersion(javaPath) < requiredJava)
         {
             _statusMessage = "Java 17+ não encontrado. Instale o Java e tente novamente.";
             return null;
@@ -65,7 +73,7 @@ public class MinecraftService
         if (!IsVersionInstalled(version))
         {
             _statusMessage = "Baixando e instalando Minecraft...";
-            var installed = await InstallVersionAsync(version);
+            var installed = await InstallVersionAsync(version, progress);
             if (string.IsNullOrWhiteSpace(installed))
             {
                 _statusMessage = "Falha ao instalar a versão selecionada.";
@@ -74,7 +82,7 @@ public class MinecraftService
         }
 
         _statusMessage = "Iniciando Minecraft...";
-        var process = await _launchManager.LaunchAsync(version, username, JavaPath, settings);
+        var process = await _launchManager.LaunchAsync(version, username, javaPath, settings);
         if (process is null)
         {
             _statusMessage = "Falha ao iniciar Minecraft. Verifique os logs em Minecraft/Launch/.";

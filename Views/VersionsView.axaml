@@ -42,12 +42,15 @@
 
         <TabControl Grid.Row="2">
             <TabItem Header="Releases"><ScrollViewer><ItemsControl ItemsSource="{Binding Releases}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
-            <TabItem Header="Snapshots"><ScrollViewer><TextBlock Text="Snapshots oficiais aparecerão aqui." Foreground="#8B98AA" Margin="12" /></ScrollViewer></TabItem>
-            <TabItem Header="Forge"><ScrollViewer><ItemsControl ItemsSource="{Binding Modded}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
-            <TabItem Header="Fabric"><ScrollViewer><ItemsControl ItemsSource="{Binding Modded}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
-            <TabItem Header="NeoForge"><ScrollViewer><ItemsControl ItemsSource="{Binding Modded}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
-            <TabItem Header="Quilt"><ScrollViewer><ItemsControl ItemsSource="{Binding Modded}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
-            <TabItem Header="Modificados"><ScrollViewer><ItemsControl ItemsSource="{Binding Installed}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
+            <TabItem Header="Snapshots"><ScrollViewer><ItemsControl ItemsSource="{Binding Snapshots}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
+            <TabItem Header="Forge"><ScrollViewer><ItemsControl ItemsSource="{Binding Forge}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
+            <TabItem Header="Fabric"><ScrollViewer><ItemsControl ItemsSource="{Binding Fabric}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
+            <TabItem Header="NeoForge"><ScrollViewer><ItemsControl ItemsSource="{Binding NeoForge}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
+            <TabItem Header="Quilt"><ScrollViewer><ItemsControl ItemsSource="{Binding Quilt}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
+            <TabItem Header="OptiFine"><ScrollViewer><ItemsControl ItemsSource="{Binding OptiFine}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
+            <TabItem Header="LiteLoader"><ScrollViewer><ItemsControl ItemsSource="{Binding LiteLoader}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
+            <TabItem Header="Modpacks"><ScrollViewer><ItemsControl ItemsSource="{Binding Modpacks}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
+            <TabItem Header="Custom"><ScrollViewer><ItemsControl ItemsSource="{Binding Custom}" ItemTemplate="{StaticResource VersionCardTemplate}" /></ScrollViewer></TabItem>
         </TabControl>
     </Grid>
 </UserControl>

@@ -45,7 +45,7 @@
                     <Button Classes="nav" Content="⌂   Home" Click="HomeClick" />
                     <Button Classes="nav" Content="▶   Jogar" Click="PlayClick" />
                     <Button Classes="nav" Content="▦   Versões" Click="VersionsClick" />
-                    <Button Classes="nav" Content="↓   Downloads" Click="ModsClick" />
+                    <Button Classes="nav" Content="⬡   NexusMods" Click="ModsClick" />
                     <Button Classes="nav" Content="⚙   Configurações" Click="SettingsClick" />
                 </StackPanel>
 
@@ -53,7 +53,7 @@
                     <StackPanel Spacing="6">
                         <TextBlock Text="Status" Foreground="#7CE1C4" FontSize="12" FontWeight="SemiBold" />
                         <TextBlock Text="Pronto para jogar" Foreground="White" FontSize="14" />
-                        <TextBlock Text="Downloads aparecem aqui sem abrir janelas extras." Foreground="#7F8CA0" FontSize="12" TextWrapping="Wrap" />
+                        <TextBlock Text="Modrinth e downloads integrados ao fluxo do launcher." Foreground="#7F8CA0" FontSize="12" TextWrapping="Wrap" />
                     </StackPanel>
                 </Border>
             </Grid>

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using NexusLauncher.Models;
+using System;
 
 namespace NexusLauncher.Minecraft.Versions;
 
@@ -37,12 +39,14 @@ public class VersionManager
         return File.Exists(_path.GetVersionJsonPath(version)) && File.Exists(_path.GetVersionJarPath(version));
     }
 
-    public async Task<string?> DownloadVersionAsync(string version)
+    public async Task<string?> DownloadVersionAsync(string version, IProgress<DownloadProgressInfo>? progress = null)
     {
         if (string.IsNullOrWhiteSpace(version))
             return null;
 
+        progress?.Report(new DownloadProgressInfo { State = "Baixando", CurrentFile = version, BytesDownloaded = 0, TotalBytes = 100 });
         await _launcher.InstallAsync(version);
+        progress?.Report(new DownloadProgressInfo { State = IsInstalled(version) ? "Concluído" : "Falhou", CurrentFile = version, BytesDownloaded = IsInstalled(version) ? 100 : 0, TotalBytes = 100 });
         return IsInstalled(version) ? version : null;
     }
 }

@@ -1,11 +1,45 @@
-<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:NexusLauncher.ViewModels" x:Class="NexusLauncher.Views.ModsView" x:DataType="vm:ModsViewModel">
-    <Grid RowDefinitions="Auto,*" RowSpacing="22">
-        <StackPanel Spacing="6"><TextBlock Text="Downloads" Foreground="White" FontSize="36" FontWeight="SemiBold"/><TextBlock Text="Acompanhe instalações, atualizações e arquivos sem janelas separadas." Foreground="#8B98AA"/></StackPanel>
-        <Border Grid.Row="1" Background="#171D28" CornerRadius="24" Padding="24"><StackPanel Spacing="16">
-            <TextBlock Text="Fila de downloads" Foreground="White" FontSize="24" FontWeight="SemiBold" />
-            <ProgressBar Minimum="0" Maximum="100" Value="0" Height="10" />
-            <Grid ColumnDefinitions="Auto,*,Auto"><TextBlock Text="0%" Foreground="#7CE1C4"/><TextBlock Grid.Column="1" Text="Nenhum arquivo em download" Foreground="#A6B5CB" HorizontalAlignment="Center"/><TextBlock Grid.Column="2" Text="--:--" Foreground="#8B98AA"/></Grid>
-            <TextBlock Text="Quando um download começar, esta área mostrará velocidade, tamanho restante, tempo estimado e arquivo atual." Foreground="#8B98AA" TextWrapping="Wrap" />
-        </StackPanel></Border>
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:NexusLauncher.ViewModels" xmlns:models="using:NexusLauncher.Models" x:Class="NexusLauncher.Views.ModsView" x:DataType="vm:ModsViewModel">
+    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="18">
+        <StackPanel Spacing="6">
+            <TextBlock Text="Modrinth" Foreground="White" FontSize="36" FontWeight="SemiBold"/>
+            <TextBlock Text="Navegue por modpacks, mods, resource packs e shaders compatíveis." Foreground="#8B98AA"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,150,130,140,130,Auto" ColumnSpacing="10">
+            <TextBox Text="{Binding SearchText, Mode=TwoWay}" Watermark="Pesquisar no Modrinth..." />
+            <ComboBox Grid.Column="1" ItemsSource="{Binding ProjectTypes}" SelectedItem="{Binding SelectedProjectType}" />
+            <ComboBox Grid.Column="2" ItemsSource="{Binding Loaders}" SelectedItem="{Binding SelectedLoader}" Watermark="Loader" />
+            <TextBox Grid.Column="3" Text="{Binding MinecraftVersion, Mode=TwoWay}" Watermark="Minecraft" />
+            <ComboBox Grid.Column="4" ItemsSource="{Binding Sorts}" SelectedItem="{Binding SelectedSort}" />
+            <Button Grid.Column="5" Content="Buscar" Command="{Binding SearchCommand}" Background="#7C5CFF" Foreground="White" />
+        </Grid>
+
+        <Grid Grid.Row="2" RowDefinitions="Auto,*" RowSpacing="12">
+            <TextBlock Text="{Binding StatusText}" Foreground="#7CE1C4" />
+            <ScrollViewer Grid.Row="1">
+                <ItemsControl ItemsSource="{Binding Projects}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:ModrinthProject">
+                            <Border Background="#171D28" CornerRadius="18" Padding="16" Margin="0,0,0,10" BorderBrush="#263145" BorderThickness="1">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                                    <StackPanel Spacing="6">
+                                        <TextBlock Text="{Binding Title}" Foreground="White" FontSize="18" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding Description}" Foreground="#A6B5CB" TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding Author, StringFormat='Autor: {0}'}" Foreground="#8B98AA" />
+                                        <TextBlock Text="{Binding LoaderText, StringFormat='Loader: {0}'}" Foreground="#7CE1C4" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Spacing="8" Width="150">
+                                        <TextBlock Text="{Binding Downloads, StringFormat='↓ {0}'}" Foreground="#A6B5CB" HorizontalAlignment="Right" />
+                                        <TextBlock Text="{Binding Follows, StringFormat='★ {0}'}" Foreground="#A6B5CB" HorizontalAlignment="Right" />
+                                        <TextBlock Text="{Binding VersionText}" Foreground="#A6B5CB" HorizontalAlignment="Right" />
+                                        <Button Content="Instalar" Command="{Binding $parent[UserControl].DataContext.InstallCommand}" CommandParameter="{Binding}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

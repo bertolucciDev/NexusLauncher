@@ -19,6 +19,12 @@ public partial class MainWindow : Window
     private void PlayClick(object? sender, RoutedEventArgs e)
         => ViewModel.GoPlay();
 
+    private void ModsClick(object? sender, RoutedEventArgs e)
+        => ViewModel.GoMods();
+
+    private void VersionsClick(object? sender, RoutedEventArgs e)
+        => ViewModel.GoVersions();
+
     private void SettingsClick(object? sender, RoutedEventArgs e)
         => ViewModel.GoSettings();
 }

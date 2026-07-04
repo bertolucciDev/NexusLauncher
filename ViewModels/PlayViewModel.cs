@@ -58,6 +58,9 @@ public partial class PlayViewModel : ViewModelBase
     [ObservableProperty]
     private string lastUpdateText = "Última atualização — hoje";
 
+    [ObservableProperty]
+    private int? minecraftProcessId;
+
     public ObservableCollection<MinecraftVersionInfo> Versions { get; } = new();
 
     public string SelectedVersionTitle => SelectedVersion is null ? "Selecione uma versão" : $"Minecraft {SelectedVersion.Id}";

@@ -6,30 +6,73 @@
     x:Class="NexusLauncher.Views.PlayView"
     x:DataType="vm:PlayViewModel">
 
-    <Grid RowDefinitions="Auto,*" RowSpacing="20">
-        <TextBlock Text="Jogar Minecraft"
-                   Foreground="White"
-                   FontSize="34"
-                   FontWeight="SemiBold" />
+    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="26">
+        <Border Background="#232832" CornerRadius="22" Padding="28">
+            <StackPanel Spacing="16">
+                <TextBlock Text="{Binding HeaderTitle}"
+                           Foreground="White"
+                           FontSize="34"
+                           FontWeight="SemiBold" />
+                <TextBlock Text="{Binding HeaderSubtitle}"
+                           Foreground="#9BB0C8"
+                           FontSize="18" />
 
-        <Grid Grid.Row="1" ColumnDefinitions="360,*" ColumnSpacing="20">
-            <Border Background="#242831" CornerRadius="24" Padding="24">
-                <StackPanel Spacing="18">
-                    <TextBlock Text="👤 Player Card" Foreground="#7CE1C4" FontWeight="SemiBold" />
-                    <Border Width="148" Height="148" Background="#1B1D21" CornerRadius="20" HorizontalAlignment="Center">
-                        <Image Source="{Binding AvatarImage}" Width="128" Height="128" Stretch="Uniform" />
-                    </Border>
-                    <TextBox Text="{Binding Nickname, Mode=TwoWay}"
-                             Watermark="Username" />
-                    <TextBlock Text="Skin atualizada automaticamente pelo username"
-                               Foreground="#7C8794"
-                               TextWrapping="Wrap" />
+                <StackPanel Spacing="10" IsVisible="{Binding IsBusy}">
+                    <ProgressBar Minimum="0"
+                                 Maximum="100"
+                                 Value="{Binding ProgressValue}"
+                                 Height="12" />
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <TextBlock Text="{Binding ProgressPercent}"
+                                   Foreground="#7CE1C4"
+                                   FontWeight="SemiBold" />
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding ProgressDetail}"
+                                   Foreground="#D7DEE8"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Grid.Column="2"
+                                   Text="{Binding ProgressEta}"
+                                   Foreground="#9BB0C8" />
+                    </Grid>
+                    <TextBlock Text="{Binding ProgressSpeed}"
+                               Foreground="#9BB0C8" />
                 </StackPanel>
-            </Border>
+            </StackPanel>
+        </Border>
 
-            <Border Grid.Column="1" Background="#242831" CornerRadius="24" Padding="24">
-                <StackPanel Spacing="18">
-                    <TextBlock Text="Versão" Foreground="#7CE1C4" FontWeight="SemiBold" />
+        <Grid Grid.Row="1" ColumnDefinitions="*,460,*">
+            <Border Grid.Column="1"
+                    Background="#262B35"
+                    CornerRadius="24"
+                    Padding="34"
+                    BoxShadow="0 18 44 0 #66000000">
+                <StackPanel Spacing="18" HorizontalAlignment="Stretch">
+                    <Border Width="150"
+                            Height="150"
+                            Background="#1B1D21"
+                            CornerRadius="22"
+                            HorizontalAlignment="Center">
+                        <Image Source="{Binding AvatarImage}"
+                               Width="128"
+                               Height="128"
+                               Stretch="Uniform" />
+                    </Border>
+
+                    <TextBox Text="{Binding Nickname, Mode=TwoWay}"
+                             Watermark="Username"
+                             TextAlignment="Center"
+                             FontSize="20" />
+
+                    <TextBlock Text="{Binding SelectedVersionTitle}"
+                               Foreground="White"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="{Binding SelectedVersionKind}"
+                               Foreground="#9BB0C8"
+                               FontSize="15"
+                               HorizontalAlignment="Center" />
+
                     <ComboBox ItemsSource="{Binding Versions}"
                               SelectedItem="{Binding SelectedVersion, Mode=TwoWay}"
                               HorizontalAlignment="Stretch">
@@ -37,10 +80,7 @@
                             <DataTemplate x:DataType="models:MinecraftVersionInfo">
                                 <StackPanel Orientation="Horizontal" Spacing="10">
                                     <TextBlock Text="{Binding Id}" Foreground="White" />
-                                    <Border Background="#1B1D21" CornerRadius="8" Padding="6,2">
-                                        <TextBlock Text="{Binding Type}" Foreground="#9BB0C8" FontSize="12" />
-                                    </Border>
-                                    <TextBlock Text="Instalado" Foreground="#7CE1C4" IsVisible="{Binding IsInstalled}" />
+                                    <TextBlock Text="{Binding Type}" Foreground="#9BB0C8" />
                                 </StackPanel>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
@@ -49,18 +89,16 @@
                     <Button Content="{Binding ButtonText}"
                             Command="{Binding PrimaryActionCommand}"
                             HorizontalAlignment="Stretch"
-                            Padding="18" />
-
-                    <Border Padding="14" Background="#1B1D21" CornerRadius="14">
-                        <StackPanel Spacing="6">
-                            <TextBlock Text="Status" Foreground="#7CE1C4" FontWeight="SemiBold" />
-                            <TextBlock Text="{Binding Status}" Foreground="#9BB0C8" TextWrapping="Wrap" />
-                            <TextBlock Text="{Binding StateStyle}" Foreground="#7CE1C4" />
-                            <TextBlock Text="{Binding MinecraftProcessId, StringFormat='PID: {0}'}" Foreground="#9BB0C8" />
-                        </StackPanel>
-                    </Border>
+                            Padding="18"
+                            FontSize="18"
+                            FontWeight="SemiBold" />
                 </StackPanel>
             </Border>
         </Grid>
+
+        <TextBlock Grid.Row="2"
+                   Text="{Binding LastUpdateText}"
+                   Foreground="#7C8794"
+                   HorizontalAlignment="Center" />
     </Grid>
 </UserControl>

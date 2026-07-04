@@ -15,9 +15,9 @@ public class VersionService
     private static readonly string[] ModpackMarkers = { "manifest.json", "modrinth.index.json", "instance.cfg", "mmc-pack.json" };
     private readonly HttpClient _httpClient = new();
     private readonly SettingsService _settingsService = new();
-    private readonly string versionsPath = MinecraftPaths.GamePath.Versions;
+    private string VersionsPath => MinecraftPaths.GamePath.Versions;
 
-    public VersionService() => Directory.CreateDirectory(versionsPath);
+    public VersionService() => Directory.CreateDirectory(VersionsPath);
 
     public async Task<List<MinecraftVersionInfo>> GetOfficialVersionsAsync()
     {
@@ -47,7 +47,7 @@ public class VersionService
         catch { return new(); }
     }
 
-    public List<string> GetInstalledVersions() => !Directory.Exists(versionsPath) ? new() : Directory.GetDirectories(versionsPath).Select(Path.GetFileName).Where(n => !string.IsNullOrWhiteSpace(n)).ToList()!;
+    public List<string> GetInstalledVersions() => !Directory.Exists(VersionsPath) ? new() : Directory.GetDirectories(VersionsPath).Select(Path.GetFileName).Where(n => !string.IsNullOrWhiteSpace(n)).ToList()!;
 
     public List<MinecraftVersionInfo> GetInstalledVersionInfos()
     {
@@ -57,7 +57,7 @@ public class VersionService
             .OrderByDescending(v => v.IsFavorite).ThenBy(v => v.Category).ThenBy(v => v.Id, StringComparer.CurrentCultureIgnoreCase).ToList();
     }
 
-    public bool IsVersionInstalled(string version) => !string.IsNullOrWhiteSpace(version) && File.Exists(Path.Combine(versionsPath, version, $"{version}.json"));
+    public bool IsVersionInstalled(string version) => !string.IsNullOrWhiteSpace(version) && File.Exists(Path.Combine(VersionsPath, version, $"{version}.json"));
 
     public void ToggleFavorite(string versionId)
     {
@@ -71,7 +71,7 @@ public class VersionService
     public MinecraftVersionInfo AnalyzeLocalVersion(string id, string lastPlayedVersion = "", HashSet<string>? favorites = null)
     {
         favorites ??= new(StringComparer.OrdinalIgnoreCase);
-        var versionDir = Path.Combine(versionsPath, id);
+        var versionDir = Path.Combine(VersionsPath, id);
         var jsonPath = Path.Combine(versionDir, $"{id}.json");
         using var doc = TryParse(jsonPath);
         var signals = CollectSignals(versionDir, doc?.RootElement);

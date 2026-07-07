@@ -1,3 +1,5 @@
+using System;
+
 namespace NexusLauncher.Models;
 
 public class MinecraftVersionInfo
@@ -12,7 +14,10 @@ public class MinecraftVersionInfo
     public string BadgeIcon { get; set; } = "🟩";
     public bool IsFavorite { get; set; }
     public bool IsLastPlayed { get; set; }
-    public string DisplayName => Id;
+    public string? InstancePath { get; set; }
+    public DateTime ReleaseTime { get; set; }
+    public bool IsGroupHeader { get; set; }
+    public string DisplayName => InstancePath is not null ? Id : Id;
     public string FriendlyType => Category switch
     {
         MinecraftVersionCategory.Release => "Release",
@@ -21,6 +26,8 @@ public class MinecraftVersionInfo
         MinecraftVersionCategory.Custom => "Custom",
         _ => Loader
     };
-    public string BaseVersionText => string.IsNullOrWhiteSpace(BaseVersion) ? FriendlyType : $"Minecraft {BaseVersion}";
+    public string BaseVersionText => InstancePath is not null
+        ? $"Minecraft {BaseVersion}"
+        : string.IsNullOrWhiteSpace(BaseVersion) ? FriendlyType : $"Minecraft {BaseVersion}";
     public string FavoriteIcon => IsFavorite ? "⭐" : "☆";
 }

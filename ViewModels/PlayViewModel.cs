@@ -1,4 +1,3 @@
-using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NexusLauncher.Models;
@@ -6,84 +5,82 @@ using NexusLauncher.Services;
 using NexusLauncher.Storage;
 using NexusLauncher.ViewModels.Base;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using NexusLauncher.Minecraft;
 
 namespace NexusLauncher.ViewModels;
 
 public partial class PlayViewModel : ViewModelBase
 {
-    private readonly NexusLauncher.Minecraft.MinecraftService _minecraft = new();
+    private readonly MinecraftService _minecraft = new();
     private readonly VersionService _versionService = new();
     private readonly SkinService _skinService = new();
     private readonly SettingsStorage _settingsStorage = new();
+    private readonly InstanceService _instanceService = new(new SettingsService());
 
-    [ObservableProperty]
-    private string nickname = "Player";
+    [ObservableProperty] private string nickname = "Player";
+    [ObservableProperty] private Avalonia.Media.Imaging.Bitmap? avatarImage;
+    [ObservableProperty] private MinecraftVersionInfo? selectedVersion;
+    [ObservableProperty] private string buttonText = LanguageService.Instance.T("play.button.play");
+    [ObservableProperty] private string headerTitle = LanguageService.Instance.T("play.title");
+    [ObservableProperty] private string headerSubtitle = string.Empty;
+    [ObservableProperty] private bool isBusy;
+    [ObservableProperty] private double progressValue;
+    [ObservableProperty] private string progressPercent = "0%";
+    [ObservableProperty] private string progressDetail = string.Empty;
+    [ObservableProperty] private string progressSpeed = string.Empty;
+    [ObservableProperty] private string progressEta = string.Empty;
+    [ObservableProperty] private string lastUpdateText = "";
 
-    [ObservableProperty]
-    private Bitmap? avatarImage;
+    public string PlayerAccountLabel => LanguageService.Instance.T("play.player_account");
+    public string VersionLabel => LanguageService.Instance.T("play.version_label");
+    public string DownloadsLabel => LanguageService.Instance.T("play.downloads");
 
-    [ObservableProperty]
-    private MinecraftVersionInfo? selectedVersion;
-
-    [ObservableProperty]
-    private string buttonText = "JOGAR";
-
-    [ObservableProperty]
-    private string headerTitle = "Pronto para jogar";
-
-    [ObservableProperty]
-    private string headerSubtitle = string.Empty;
-
-    [ObservableProperty]
-    private bool isBusy;
-
-    [ObservableProperty]
-    private double progressValue;
-
-    [ObservableProperty]
-    private string progressPercent = "0%";
-
-    [ObservableProperty]
-    private string progressDetail = string.Empty;
-
-    [ObservableProperty]
-    private string progressSpeed = string.Empty;
-
-    [ObservableProperty]
-    private string progressEta = string.Empty;
-
-    [ObservableProperty]
-    private string lastUpdateText = "Última atualização — hoje";
-
-    public ObservableCollection<MinecraftVersionInfo> Versions { get; } = new();
-
-    public string SelectedVersionTitle => SelectedVersion is null ? "Selecione uma versão" : SelectedVersion.Id;
-
-    public string SelectedVersionKind => SelectedVersion is null ? "Release" : $"{SelectedVersion.BadgeIcon} {SelectedVersion.BaseVersionText} • {ToFriendlyType(SelectedVersion)}";
-
-    public PlayViewModel()
+    public PlayViewModel(bool autoStart = false)
     {
         Nickname = _settingsStorage.LoadNickname();
-        LauncherRuntime.Processes.MinecraftExited += (_, _) =>
+        LanguageService.Instance.PropertyChanged += (_, _) =>
         {
-            IsBusy = false;
-            ProgressValue = 0;
-            ProgressPercent = "0%";
-            ApplyReadyHeader();
-            UpdateButtonText();
+            HeaderTitle = LanguageService.Instance.T("play.title");
+            ButtonText = LanguageService.Instance.T("play.button.play");
+            OnPropertyChanged(nameof(PlayerAccountLabel));
+            OnPropertyChanged(nameof(VersionLabel));
+            OnPropertyChanged(nameof(DownloadsLabel));
         };
-        _ = LoadVersionsAsync();
+
+        LauncherRuntime.Processes.MinecraftExited += OnMinecraftExited;
+        _ = LoadVersionsAsync().ContinueWith(async t =>
+        {
+            try
+            {
+                if (autoStart)
+                    await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(PrimaryAction);
+            }
+            catch { }
+        });
         _ = RefreshSkinAsync();
+        UpdateButtonText();
+    }
+
+    private void OnMinecraftExited(object? sender, EventArgs e)
+    {
+        Avalonia.Threading.Dispatcher.UIThread.Post(NullProgress);
+    }
+
+    private void NullProgress()
+    {
+        IsBusy = false;
+        ProgressValue = 0;
+        ProgressPercent = "0%";
+        ApplyReadyHeader();
         UpdateButtonText();
     }
 
     partial void OnSelectedVersionChanged(MinecraftVersionInfo? value)
     {
-        OnPropertyChanged(nameof(SelectedVersionTitle));
-        OnPropertyChanged(nameof(SelectedVersionKind));
         ApplyReadyHeader();
         UpdateButtonText();
     }
@@ -99,27 +96,79 @@ public partial class PlayViewModel : ViewModelBase
 
     private async Task LoadVersionsAsync()
     {
-        SetProgress("Verificando biblioteca", 12, "Preparando versões", "", "");
-        ButtonText = "VERIFICANDO...";
+        var settings = _settingsStorage.Load();
+        var enabled = GetEnabledCategories(settings);
+
+        var installed = new List<MinecraftVersionInfo>();
+        foreach (var v in _versionService.GetInstalledVersionInfos().Where(v => enabled.Contains(v.Category)))
+            installed.Add(v);
+
+        var official = await _versionService.GetOfficialVersionsAsync();
+        var installedIds = installed.Select(v => v.Id).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var uninstalled = official.Where(v => !installedIds.Contains(v.Id) && enabled.Contains(v.Category)).Take(80).ToList();
+
+        var custom = new List<MinecraftVersionInfo>();
+        foreach (var inst in _instanceService.GetInstances())
+        {
+            if (installed.Any(v => v.InstancePath == inst.Path) || custom.Any(v => v.InstancePath == inst.Path)) continue;
+            custom.Add(new MinecraftVersionInfo
+            {
+                Id = inst.Name,
+                BaseVersion = inst.MinecraftVersion,
+                Loader = string.IsNullOrWhiteSpace(inst.Loader) || inst.Loader == "vanilla" ? "Vanilla" : inst.Loader.First().ToString().ToUpper() + inst.Loader[1..],
+                LoaderVersion = inst.LoaderVersion,
+                Type = "custom",
+                IsInstalled = true,
+                IsLastPlayed = string.Equals(settings.LastPlayedVersion, inst.MinecraftVersion, StringComparison.OrdinalIgnoreCase),
+                Category = MinecraftVersionCategory.Custom,
+                BadgeIcon = "📦",
+                InstancePath = inst.Path
+            });
+        }
 
         Versions.Clear();
-        foreach (var version in _versionService.GetInstalledVersionInfos())
-            Versions.Add(version);
+        if (installed.Count > 0)
+        {
+            Versions.Add(new MinecraftVersionInfo { IsGroupHeader = true, Id = "Installed" });
+            foreach (var v in installed) Versions.Add(v);
+        }
+        if (custom.Count > 0)
+        {
+            Versions.Add(new MinecraftVersionInfo { IsGroupHeader = true, Id = "Custom" });
+            foreach (var v in custom) Versions.Add(v);
+        }
+        if (uninstalled.Count > 0)
+        {
+            Versions.Add(new MinecraftVersionInfo { IsGroupHeader = true, Id = "Available" });
+            foreach (var v in uninstalled) Versions.Add(v);
+        }
 
-        var installedIds = Versions.Select(v => v.Id).ToHashSet();
-        var officialVersions = await _versionService.GetOfficialVersionsAsync();
-        foreach (var version in officialVersions.Where(v => !installedIds.Contains(v.Id)).Take(80))
-            Versions.Add(version);
-
-        var settings = _settingsStorage.Load();
-        SelectedVersion = Versions.FirstOrDefault(v => v.Id == settings.LastPlayedVersion) ?? Versions.FirstOrDefault(v => v.IsInstalled) ?? Versions.FirstOrDefault();
+        SelectedVersion = Versions.FirstOrDefault(v => !v.IsGroupHeader && (v.Id == settings.LastPlayedVersion || (v is { InstancePath: not null } && v.BaseVersion == settings.LastPlayedVersion)))
+            ?? Versions.FirstOrDefault(v => v.IsInstalled) ?? Versions.FirstOrDefault(v => !v.IsGroupHeader);
         IsBusy = false;
         ProgressValue = 0;
         ProgressPercent = "0%";
-        LastUpdateText = $"Última atualização — {DateTime.Now:dd/MM/yyyy}";
+        LastUpdateText = $"Updated {DateTime.Now:dd/MM/yyyy}";
         ApplyReadyHeader();
         UpdateButtonText();
     }
+
+    private static HashSet<MinecraftVersionCategory> GetEnabledCategories(LauncherSettings settings)
+    {
+        if (settings.EnabledCategories is null || settings.EnabledCategories.Count == 0)
+            return new HashSet<MinecraftVersionCategory>((MinecraftVersionCategory[])Enum.GetValues(typeof(MinecraftVersionCategory)));
+
+        var set = new HashSet<MinecraftVersionCategory>();
+        foreach (var name in settings.EnabledCategories)
+        {
+            if (Enum.TryParse<MinecraftVersionCategory>(name, true, out var cat))
+                set.Add(cat);
+        }
+        return set.Count > 0 ? set
+            : new HashSet<MinecraftVersionCategory>((MinecraftVersionCategory[])Enum.GetValues(typeof(MinecraftVersionCategory)));
+    }
+
+    public System.Collections.ObjectModel.ObservableCollection<MinecraftVersionInfo> Versions { get; } = new();
 
     private async Task RefreshSkinAsync()
     {
@@ -128,125 +177,81 @@ public partial class PlayViewModel : ViewModelBase
 
     private void UpdateButtonText()
     {
-        if (IsBusy)
-            return;
-
-        var version = SelectedVersion?.Id;
-        if (!string.IsNullOrWhiteSpace(version) && !_minecraft.IsJavaReadyFor(version))
+        if (IsBusy) return;
+        if (SelectedVersion is null) { ButtonText = "CHECK"; return; }
+        if (SelectedVersion.InstancePath is not null) { ButtonText = LanguageService.Instance.T("play.button.play"); return; }
+        if (!string.IsNullOrWhiteSpace(SelectedVersion.Id) && !_minecraft.IsJavaReadyFor(SelectedVersion.Id))
         {
-            ButtonText = "INSTALAR JAVA";
+            ButtonText = LanguageService.Instance.T("play.button.install_java");
             return;
         }
-
-        ButtonText = string.IsNullOrWhiteSpace(version)
-            ? "VERIFICAR"
-            : (_minecraft.IsVersionInstalled(version) ? "JOGAR" : "INSTALAR");
+        ButtonText = string.IsNullOrWhiteSpace(SelectedVersion.Id)
+            ? "CHECK"
+            : (_minecraft.IsVersionInstalled(SelectedVersion.Id) ? LanguageService.Instance.T("play.button.play") : LanguageService.Instance.T("play.button.install"));
     }
 
     private void ApplyReadyHeader()
     {
-        if (IsBusy)
-            return;
-
-        HeaderTitle = GetGreeting();
+        if (IsBusy) return;
         HeaderSubtitle = SelectedVersion is null ? Nickname : $"{Nickname} • {SelectedVersion.Id}";
         ProgressDetail = string.Empty;
         ProgressSpeed = string.Empty;
         ProgressEta = string.Empty;
     }
 
-    private void SetProgress(string title, double value, string detail, string speed, string eta)
-    {
-        IsBusy = true;
-        HeaderTitle = title;
-        HeaderSubtitle = SelectedVersion is null ? "Preparando Minecraft" : $"Minecraft {SelectedVersion.Id}";
-        ProgressValue = Math.Clamp(value, 0, 100);
-        ProgressPercent = $"{(int)ProgressValue}%";
-        ProgressDetail = detail;
-        ProgressSpeed = speed;
-        ProgressEta = eta;
-    }
-
     [RelayCommand]
     public async Task PrimaryAction()
     {
-        if (SelectedVersion is null)
-        {
-            SetProgress("Verificando versões", 20, "Escolha uma versão para continuar", "", "");
-            await Task.Delay(600);
-            IsBusy = false;
-            ApplyReadyHeader();
-            UpdateButtonText();
-            return;
-        }
+        if (SelectedVersion is null) return;
 
-        var selectedVersion = SelectedVersion;
-        var wasInstalled = _minecraft.IsVersionInstalled(selectedVersion.Id);
         var settings = _settingsStorage.Load();
         settings.Nickname = Nickname;
         _settingsStorage.Save(settings);
 
+        var versionId = SelectedVersion.InstancePath is not null ? SelectedVersion.BaseVersion : SelectedVersion.Id;
+
         try
         {
-            ButtonText = _minecraft.IsVersionInstalled(selectedVersion.Id) ? "VERIFICANDO..." : "BAIXANDO...";
-            SetProgress("Preparando ambiente", 18, "Verificando Java", "", "");
-
-            if (!_minecraft.IsJavaReadyFor(selectedVersion.Id))
-            {
-                SetProgress("Java necessário", 62, "Instalação automática de Java será baixada na próxima etapa", "", "");
-                await Task.Delay(700);
-                IsBusy = false;
-                ApplyReadyHeader();
-                ButtonText = "INSTALAR JAVA";
-                return;
-            }
-
-            if (!_minecraft.IsVersionInstalled(selectedVersion.Id))
-                SetProgress($"Instalando Minecraft {selectedVersion.Id}", 53, "Arquivos: preparando download", "Velocidade: calculando", "Tempo restante: calculando");
-            else
-                SetProgress("Preparando ambiente", 84, "Carregando perfil", "", "");
-
+            ButtonText = "WORKING...";
+            IsBusy = true;
             var progress = new Progress<DownloadProgressInfo>(ApplyDownloadProgress);
-            var process = await _minecraft.PrepareAndLaunchAsync(selectedVersion.Id, Nickname, settings, progress);
-            selectedVersion.IsInstalled = process is not null || _minecraft.IsVersionInstalled(selectedVersion.Id);
-            if (selectedVersion.IsInstalled && !wasInstalled)
-                await LoadVersionsAsync();
+            var process = await _minecraft.PrepareAndLaunchAsync(versionId, Nickname, settings, progress, SelectedVersion.InstancePath);
             if (process is not null)
             {
-                settings.LastPlayedVersion = selectedVersion.Id;
+                settings.LastPlayedVersion = versionId;
                 _settingsStorage.Save(settings);
-                SetProgress("Concluído", 100, "Abrindo Minecraft", "", "");
-                await Task.Delay(350);
-                IsBusy = false;
-                ApplyReadyHeader();
-                ButtonText = "JOGAR";
-                return;
             }
-
-            IsBusy = false;
-            HeaderTitle = "Não foi possível iniciar";
-            HeaderSubtitle = "Confira os logs para detalhes";
-            UpdateButtonText();
+            else
+            {
+                ProgressDetail = _minecraft.GetStatusMessage();
+                System.Console.WriteLine($"[PlayViewModel] Launch failed: {_minecraft.GetStatusMessage()}");
+            }
         }
-        catch (Exception)
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"[PlayViewModel] PrimaryAction error: {ex.Message}");
+        }
+        finally
         {
             IsBusy = false;
-            HeaderTitle = "Não foi possível iniciar";
-            HeaderSubtitle = "Confira os logs para detalhes";
             UpdateButtonText();
+            DownloadManagerService.Instance.ClearGlobalProgress();
         }
     }
 
     private void ApplyDownloadProgress(DownloadProgressInfo progress)
     {
         IsBusy = true;
-        HeaderTitle = progress.State == "Concluído" ? "Instalação concluída" : "Baixando...";
         ProgressValue = Math.Clamp(progress.Percent, 0, 100);
         ProgressPercent = $"{ProgressValue:0}%";
-        ProgressDetail = string.IsNullOrWhiteSpace(progress.CurrentFile) ? "Preparando arquivos" : progress.CurrentFile;
-        ProgressSpeed = progress.BytesPerSecond > 0 ? $"{FormatBytes(progress.BytesPerSecond)}/s" : "Calculando velocidade";
-        ProgressEta = progress.Eta.HasValue ? $"Restante: {FormatEta(progress.Eta.Value)}" : "Restante: calculando";
-        ButtonText = progress.State == "Concluído" ? "JOGAR" : "BAIXANDO...";
+        ProgressDetail = string.IsNullOrWhiteSpace(progress.CurrentFile) ? "Preparing" : progress.CurrentFile;
+        ProgressSpeed = progress.BytesPerSecond > 0 ? $"{FormatBytes(progress.BytesPerSecond)}/s" : "Calculating";
+        ProgressEta = progress.Eta.HasValue ? FormatEta(progress.Eta.Value) : "---";
+        ButtonText = "INSTALLING";
+        DownloadManagerService.Instance.ReportGlobalProgress(
+            string.IsNullOrWhiteSpace(progress.CurrentFile) ? "Preparando..." : progress.CurrentFile,
+            progress.Percent,
+            "Baixando");
     }
 
     private static string FormatBytes(double bytes)
@@ -258,29 +263,5 @@ public partial class PlayViewModel : ViewModelBase
         return $"{value:0.##} {units[unit]}";
     }
 
-    private static string FormatEta(TimeSpan eta) => eta <= TimeSpan.Zero ? "0s" : eta.TotalMinutes >= 1 ? $"{eta.TotalMinutes:0} min" : $"{eta.TotalSeconds:0}s";
-
-    private static string ToFriendlyType(MinecraftVersionInfo version)
-    {
-        return version.Category switch
-        {
-            MinecraftVersionCategory.Forge => "Forge",
-            MinecraftVersionCategory.NeoForge => "NeoForge",
-            MinecraftVersionCategory.Fabric => "Fabric",
-            MinecraftVersionCategory.Quilt => "Quilt",
-            MinecraftVersionCategory.OptiFine => "OptiFine",
-            MinecraftVersionCategory.LiteLoader => "LiteLoader",
-            MinecraftVersionCategory.Modpack => "Modpack",
-            MinecraftVersionCategory.Custom => "Custom",
-            _ => version.Type == "release" ? "Release" : version.Type
-        };
-    }
-
-    private static string GetGreeting()
-    {
-        var hour = DateTime.Now.Hour;
-        if (hour < 12) return "Bom dia!";
-        if (hour < 18) return "Boa tarde!";
-        return "Boa noite!";
-    }
+    private static string FormatEta(TimeSpan eta) => eta <= TimeSpan.Zero ? "0s" : eta.TotalMinutes >= 1 ? $"{eta.TotalMinutes:0}m" : $"{eta.TotalSeconds:0}s";
 }

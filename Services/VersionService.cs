@@ -31,23 +31,29 @@ public class VersionService
             var settings = _settingsService.Load();
             var favorites = settings.FavoriteVersions.ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-            return manifest.Versions.Where(v => !string.IsNullOrWhiteSpace(v.Id)).Select(v => new MinecraftVersionInfo
-            {
-                Id = v.Id!,
-                Type = v.Type ?? "release",
-                BaseVersion = v.Id!,
-                Loader = "Vanilla",
-                BadgeIcon = v.Type == "snapshot" ? "🧪" : "🟩",
-                IsInstalled = installed.Contains(v.Id!),
-                IsFavorite = favorites.Contains(v.Id!),
-                IsLastPlayed = string.Equals(settings.LastPlayedVersion, v.Id, StringComparison.OrdinalIgnoreCase),
-                Category = v.Type == "snapshot" ? MinecraftVersionCategory.Snapshot : MinecraftVersionCategory.Release
-            }).OrderByDescending(v => v.IsFavorite).ThenByDescending(v => v.Id, VersionStringComparer.Instance).ToList();
+            return manifest.Versions
+                .Where(v => !string.IsNullOrWhiteSpace(v.Id) && v.Type != "old_alpha" && v.Type != "old_beta")
+                .Select(v => new MinecraftVersionInfo
+                {
+                    Id = v.Id!,
+                    Type = v.Type ?? "release",
+                    BaseVersion = v.Id!,
+                    Loader = "Vanilla",
+                    BadgeIcon = v.Type == "snapshot" ? "🧪" : "🟩",
+                    IsInstalled = installed.Contains(v.Id!),
+                    IsFavorite = favorites.Contains(v.Id!),
+                    IsLastPlayed = string.Equals(settings.LastPlayedVersion, v.Id, StringComparison.OrdinalIgnoreCase),
+                    Category = v.Type == "snapshot" ? MinecraftVersionCategory.Snapshot : MinecraftVersionCategory.Release,
+                    ReleaseTime = v.ReleaseTime
+                })
+                .OrderByDescending(v => v.IsFavorite)
+                .ThenByDescending(v => v.ReleaseTime)
+                .ToList();
         }
-        catch { return new(); }
+        catch (Exception ex) { System.Console.WriteLine($"[VersionService] GetOfficialVersions: {ex.Message}"); return new(); }
     }
 
-    public List<string> GetInstalledVersions() => !Directory.Exists(VersionsPath) ? new() : Directory.GetDirectories(VersionsPath).Select(Path.GetFileName).Where(n => !string.IsNullOrWhiteSpace(n)).ToList()!;
+    public List<string> GetInstalledVersions() => !Directory.Exists(VersionsPath) ? new() : Directory.GetDirectories(VersionsPath).Select(Path.GetFileName).Where(n => !string.IsNullOrWhiteSpace(n)).Select(n => n!).ToList();
 
     public List<MinecraftVersionInfo> GetInstalledVersionInfos()
     {
@@ -58,6 +64,49 @@ public class VersionService
     }
 
     public bool IsVersionInstalled(string version) => !string.IsNullOrWhiteSpace(version) && File.Exists(Path.Combine(VersionsPath, version, $"{version}.json"));
+
+    public List<string> GetCompatibleLoaders(string mcVersion)
+    {
+        if (string.IsNullOrWhiteSpace(mcVersion))
+            return new() { "vanilla" };
+
+        var loaders = new List<string> { "vanilla" };
+
+        if (!TryParseVersion(mcVersion, out var major, out var minor, out _))
+            return loaders;
+
+        if (major > 1 || (major == 1 && minor >= 14))
+            loaders.Add("fabric");
+
+        if (major > 1 || (major == 1 && minor >= 18))
+            loaders.Add("quilt");
+
+        if (major > 1 || (major == 1 && minor >= 1))
+            loaders.Add("forge");
+
+        if (major > 1 || (major == 1 && minor >= 20))
+            loaders.Add("neoforge");
+
+        return loaders;
+    }
+
+    private static bool TryParseVersion(string version, out int major, out int minor, out int patch)
+    {
+        major = 0; minor = 0; patch = 0;
+        if (string.IsNullOrWhiteSpace(version)) return false;
+
+        var parts = version.Split('.', '-');
+        if (parts.Length == 0) return false;
+
+        if (!int.TryParse(parts[0], out major)) return false;
+        if (parts.Length > 1) int.TryParse(parts[1], out minor);
+        if (parts.Length > 2)
+        {
+            var p = parts[2].Split(' ');
+            int.TryParse(p[0], out patch);
+        }
+        return true;
+    }
 
     public void ToggleFavorite(string versionId)
     {
@@ -168,16 +217,19 @@ public class VersionService
         MinecraftVersionCategory.Custom => "🛠", _ => "🟩"
     };
 
-    private static JsonDocument? TryParse(string path) { try { return File.Exists(path) ? JsonDocument.Parse(File.ReadAllText(path)) : null; } catch { return null; } }
+    private static JsonDocument? TryParse(string path) { try { return File.Exists(path) ? JsonDocument.Parse(File.ReadAllText(path)) : null; } catch (Exception ex) { System.Console.WriteLine($"[VersionService] TryParse: {ex.Message}"); return null; } }
     private static bool TryGetString(JsonElement e, string name, out string value) { value = string.Empty; if (e.TryGetProperty(name, out var p) && p.ValueKind == JsonValueKind.String) { value = p.GetString() ?? string.Empty; return !string.IsNullOrWhiteSpace(value); } return false; }
     private static bool LooksLikeVanillaVersion(string value) => !string.IsNullOrWhiteSpace(value) && value.All(c => char.IsDigit(c) || c == '.' || c == '-');
 
-    private sealed class VersionManifest { public List<VersionEntry>? Versions { get; set; } }
-    private sealed class VersionEntry { public string? Id { get; set; } public string? Type { get; set; } }
-
-    private sealed class VersionStringComparer : IComparer<string>
+    private sealed class VersionManifest
     {
-        public static VersionStringComparer Instance { get; } = new();
-        public int Compare(string? x, string? y) => string.Compare(x, y, StringComparison.OrdinalIgnoreCase);
+        public List<VersionEntry>? Versions { get; set; }
+    }
+
+    private sealed class VersionEntry
+    {
+        public string? Id { get; set; }
+        public string? Type { get; set; }
+        public DateTime ReleaseTime { get; set; }
     }
 }

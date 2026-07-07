@@ -31,8 +31,9 @@ public class SettingsService
 
             return Normalize(settings ?? new LauncherSettings());
         }
-        catch
+        catch (Exception ex)
         {
+            System.Console.WriteLine($"[SettingsService] Load: {ex.Message}");
             return new LauncherSettings();
         }
     }
@@ -64,6 +65,8 @@ public class SettingsService
         settings.LastVersionCategory = string.IsNullOrWhiteSpace(settings.LastVersionCategory) ? "Releases" : settings.LastVersionCategory;
         settings.JavaPath = settings.JavaPath ?? string.Empty;
         settings.Theme = string.IsNullOrWhiteSpace(settings.Theme) ? "Dark" : settings.Theme;
+        settings.Language = string.IsNullOrWhiteSpace(settings.Language) ? "pt-BR" : settings.Language;
+        settings.EnabledCategories ??= new System.Collections.Generic.List<string>();
         return settings;
     }
 }

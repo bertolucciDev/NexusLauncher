@@ -1,13 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <StartupObject>NexusLauncher.Program</StartupObject>
+    <NexuSkinAgentDir>$(SolutionDir)..\..\NexuSkinAgent</NexuSkinAgentDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,5 +29,17 @@
     </PackageReference>
     <PackageReference Include="CmlLib.Core" Version="4.0.6" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4022.49" />
   </ItemGroup>
+
+  <Target Name="BuildNexuSkinAgent" BeforeTargets="Build" Condition="Exists('$(NexuSkinAgentDir)\build_agent.bat')">
+    <PropertyGroup>
+      <_AgentBat>$(NexuSkinAgentDir)\build_agent.bat</_AgentBat>
+      <_AgentOut>$(OutDir)nxagent.jar</_AgentOut>
+    </PropertyGroup>
+    <Message Text="[NexuSkin] Building agent from $(_AgentBat)" Importance="high" />
+    <Exec Command='cmd.exe /c ""$(_AgentBat)""' ContinueOnError="true" />
+    <Copy SourceFiles="$(_AgentOut)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
+
 </Project>

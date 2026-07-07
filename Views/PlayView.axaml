@@ -3,93 +3,109 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:NexusLauncher.ViewModels"
     xmlns:models="using:NexusLauncher.Models"
+    xmlns:local="using:NexusLauncher.Helpers"
     x:Class="NexusLauncher.Views.PlayView"
     x:DataType="vm:PlayViewModel">
 
-    <Grid RowDefinitions="Auto,*" RowSpacing="22">
-        <Grid ColumnDefinitions="*,Auto">
-            <StackPanel Spacing="6">
-                <TextBlock Text="Jogar" Foreground="White" FontSize="36" FontWeight="SemiBold" />
-                <TextBlock Text="Escolha sua conta, confirme a versão e inicie o Minecraft." Foreground="#8B98AA" FontSize="15" />
+    <UserControl.Resources>
+        <local:BoolInvertConverter x:Key="BoolInvert" />
+    </UserControl.Resources>
+
+    <Grid RowDefinitions="Auto,*" Background="Transparent">
+        <!-- Header section -->
+        <Grid ColumnDefinitions="*,Auto" Margin="28,24,28,0">
+            <StackPanel Spacing="4">
+                <TextBlock Text="{Binding HeaderTitle}" FontSize="22" FontWeight="Bold"
+                           Foreground="{DynamicResource Brush.ForegroundMain}" />
+                <TextBlock Text="{Binding HeaderSubtitle}" FontSize="13"
+                           Foreground="{DynamicResource Brush.ForegroundMuted}" />
             </StackPanel>
-            <Border Grid.Column="1" Background="#151B25" CornerRadius="18" Padding="14,10" VerticalAlignment="Center">
-                <TextBlock Text="Nexus • Stable" Foreground="#7CE1C4" FontWeight="SemiBold" />
-            </Border>
-        </Grid>
-
-        <Grid Grid.Row="1" ColumnDefinitions="1.15*,0.85*" RowDefinitions="*,Auto" ColumnSpacing="22" RowSpacing="22">
-            <Border Background="#171D28" CornerRadius="26" Padding="28" BoxShadow="0 24 60 0 #66000000">
-                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="26">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="{Binding HeaderTitle}" Foreground="White" FontSize="30" FontWeight="SemiBold" />
-                        <TextBlock Text="{Binding HeaderSubtitle}" Foreground="#A6B5CB" FontSize="16" />
-                    </StackPanel>
-
-                    <Grid Grid.Row="1" ColumnDefinitions="Auto,*" ColumnSpacing="24" VerticalAlignment="Center">
-                        <Border Width="150" Height="150" Background="#0F1218" CornerRadius="28" BorderBrush="#273247" BorderThickness="1">
-                            <Image Source="{Binding AvatarImage}" Width="128" Height="128" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-
-                        <StackPanel Grid.Column="1" Spacing="16" VerticalAlignment="Center">
-                            <StackPanel Spacing="8">
-                                <TextBlock Text="Conta do jogador" Foreground="#7CE1C4" FontSize="12" FontWeight="SemiBold" />
-                                <TextBox Text="{Binding Nickname, Mode=TwoWay}" Watermark="Nickname do Minecraft" FontSize="18" Padding="14" />
-                            </StackPanel>
-                            <Border Background="#101620" CornerRadius="18" Padding="18">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <StackPanel Spacing="4">
-                                        <TextBlock Text="Versão selecionada" Foreground="#7F8CA0" FontSize="12" />
-                                        <TextBlock Text="{Binding SelectedVersionTitle}" Foreground="White" FontSize="24" FontWeight="SemiBold" />
-                                        <TextBlock Text="{Binding SelectedVersionKind}" Foreground="#A6B5CB" />
-                                    </StackPanel>
-                                    <TextBlock Grid.Column="1" Text="▣" Foreground="#7C5CFF" FontSize="28" VerticalAlignment="Center" />
-                                </Grid>
-                            </Border>
-                            <ComboBox ItemsSource="{Binding Versions}" SelectedItem="{Binding SelectedVersion, Mode=TwoWay}" HorizontalAlignment="Stretch">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate x:DataType="models:MinecraftVersionInfo">
-                                        <StackPanel Orientation="Horizontal" Spacing="10">
-                                            <TextBlock Text="{Binding BadgeIcon}" />
-                                            <TextBlock Text="{Binding Id}" Foreground="White" />
-                                            <TextBlock Text="{Binding FriendlyType}" Foreground="#9BB0C8" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                        </StackPanel>
-                    </Grid>
-
-                    <StackPanel Grid.Row="2" Spacing="14">
-                        <Button Content="{Binding ButtonText}" Command="{Binding PrimaryActionCommand}" HorizontalAlignment="Stretch" Padding="20" FontSize="19" FontWeight="SemiBold" Background="#7C5CFF" Foreground="White" CornerRadius="16" />
-                        <TextBlock Text="{Binding LastUpdateText}" Foreground="#6F7C8F" HorizontalAlignment="Center" />
+            <Border Grid.Column="1" Background="{DynamicResource Brush.Surface}" Padding="14,10"
+                    VerticalAlignment="Top">
+                <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="10">
+                    <Border Width="32" Height="32" Background="{DynamicResource Brush.SurfaceAlt}">
+                        <TextBlock Text="●" FontSize="14"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource Brush.ForegroundMuted}" />
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="0">
+                        <TextBlock Text="{Binding Nickname}" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Brush.ForegroundMain}"
+                                   TextTrimming="CharacterEllipsis" MaxWidth="120" />
+                        <TextBlock Text="Online" FontSize="10"
+                                   Foreground="{DynamicResource Brush.Accent}" />
                     </StackPanel>
                 </Grid>
             </Border>
-
-            <StackPanel Grid.Column="1" Spacing="22">
-                <Border Background="#171D28" CornerRadius="24" Padding="22">
-                    <StackPanel Spacing="14">
-                        <TextBlock Text="Downloads" Foreground="White" FontSize="22" FontWeight="SemiBold" />
-                        <StackPanel Spacing="10" IsVisible="{Binding IsBusy}">
-                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressValue}" Height="10" />
-                            <Grid ColumnDefinitions="Auto,*,Auto">
-                                <TextBlock Text="{Binding ProgressPercent}" Foreground="#7CE1C4" FontWeight="SemiBold" />
-                                <TextBlock Grid.Column="1" Text="{Binding ProgressDetail}" Foreground="#D7DEE8" HorizontalAlignment="Center" />
-                                <TextBlock Grid.Column="2" Text="{Binding ProgressEta}" Foreground="#9BB0C8" />
-                            </Grid>
-                            <TextBlock Text="{Binding ProgressSpeed}" Foreground="#9BB0C8" />
-                        </StackPanel>
-                        <TextBlock Text="Instalações, atualizações e arquivos atuais serão exibidos aqui, dentro do launcher." Foreground="#8B98AA" TextWrapping="Wrap" />
-                    </StackPanel>
-                </Border>
-
-                <Border Background="#171D28" CornerRadius="24" Padding="22">
-                    <StackPanel Spacing="12">
-                        <TextBlock Text="Novidades" Foreground="White" FontSize="22" FontWeight="SemiBold" />
-                        <TextBlock Text="Interface redesenhada com foco em versões, modpacks e ações claras para jogar." Foreground="#A6B5CB" TextWrapping="Wrap" />
-                    </StackPanel>
-                </Border>
-            </StackPanel>
         </Grid>
+
+        <!-- Content -->
+        <Grid Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="400" Margin="28,0">
+            <Border Background="{DynamicResource Brush.Surface}" Padding="28">
+                <StackPanel Spacing="24">
+                    <!-- Title -->
+                    <TextBlock Text="{Binding ButtonText}" FontSize="18" FontWeight="Bold"
+                               Foreground="{DynamicResource Brush.ForegroundMain}"
+                               HorizontalAlignment="Center" />
+
+                    <!-- Version Selector -->
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="{Binding VersionLabel}" FontSize="11" FontWeight="Bold"
+                                   Foreground="{DynamicResource Brush.ForegroundDim}" />
+                        <ComboBox x:Name="VersionCombo"
+                                  ItemsSource="{Binding Versions}"
+                                  SelectedItem="{Binding SelectedVersion, Mode=TwoWay}"
+                                  Background="{DynamicResource Brush.SurfaceAlt}"
+                                  MaxDropDownHeight="280"
+                                  HorizontalAlignment="Stretch">
+                            <ComboBox.Styles>
+                                <Style Selector="ComboBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ComboBox.Styles>
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:MinecraftVersionInfo">
+                                    <Grid>
+                                        <Border Padding="10,10,10,4" IsVisible="{Binding IsGroupHeader}" Background="Transparent">
+                                            <TextBlock Text="{Binding Id}" FontSize="11" FontWeight="Bold"
+                                                       Foreground="{DynamicResource Brush.ForegroundMuted}" />
+                                        </Border>
+                                        <Border Padding="10,7" IsVisible="{Binding IsGroupHeader, Converter={StaticResource BoolInvert}}"
+                                                Background="Transparent">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <TextBlock Text="{Binding BadgeIcon}" MinWidth="22" />
+                                                <TextBlock Text="{Binding Id}" Foreground="{DynamicResource Brush.ForegroundMain}"
+                                                           TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Text="·" Foreground="{DynamicResource Brush.ForegroundDim}" />
+                                                <TextBlock Text="{Binding FriendlyType}" Foreground="{DynamicResource Brush.Accent}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Play Button -->
+                    <Button Content="{Binding ButtonText}"
+                            Command="{Binding PrimaryActionCommand}"
+                            Classes="Accent"
+                            HorizontalAlignment="Stretch" Height="48" FontSize="16" />
+
+                    <!-- Status text -->
+                    <TextBlock Text="{Binding LastUpdateText}" Foreground="{DynamicResource Brush.ForegroundDim}"
+                               FontSize="11" HorizontalAlignment="Center" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Progress bar -->
+        <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="28,8,28,20" Spacing="6"
+                    IsVisible="{Binding IsBusy}">
+            <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressValue}" Height="4"
+                         HorizontalAlignment="Stretch" />
+            <TextBlock Text="{Binding ProgressDetail}" Foreground="{DynamicResource Brush.ForegroundMuted}"
+                       FontSize="12" />
+        </StackPanel>
     </Grid>
 </UserControl>

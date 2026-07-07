@@ -1,45 +1,178 @@
-<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:NexusLauncher.ViewModels" xmlns:models="using:NexusLauncher.Models" x:Class="NexusLauncher.Views.ModsView" x:DataType="vm:ModsViewModel">
-    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="18">
-        <StackPanel Spacing="6">
-            <TextBlock Text="Modrinth" Foreground="White" FontSize="36" FontWeight="SemiBold"/>
-            <TextBlock Text="Navegue por modpacks, mods, resource packs e shaders compatíveis." Foreground="#8B98AA"/>
+<UserControl xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:NexusLauncher.ViewModels"
+    xmlns:models="using:NexusLauncher.Models"
+    xmlns:helpers="using:NexusLauncher.Helpers"
+    xmlns:conv="using:NexusLauncher.Helpers"
+    x:Class="NexusLauncher.Views.ModsView"
+    x:DataType="vm:ModsViewModel">
+
+    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="0" Background="Transparent">
+        <!-- Header -->
+        <StackPanel Spacing="4" Margin="28,24,28,0">
+            <TextBlock Text="{Binding TitleLabel}" FontSize="22" FontWeight="Bold"
+                       Foreground="{DynamicResource Brush.ForegroundMain}" />
+            <TextBlock Text="{Binding SubtitleLabel}" FontSize="13"
+                       Foreground="{DynamicResource Brush.ForegroundMuted}" />
         </StackPanel>
 
-        <Grid Grid.Row="1" ColumnDefinitions="*,150,130,140,130,Auto" ColumnSpacing="10">
-            <TextBox Text="{Binding SearchText, Mode=TwoWay}" Watermark="Pesquisar no Modrinth..." />
-            <ComboBox Grid.Column="1" ItemsSource="{Binding ProjectTypes}" SelectedItem="{Binding SelectedProjectType}" />
-            <ComboBox Grid.Column="2" ItemsSource="{Binding Loaders}" SelectedItem="{Binding SelectedLoader}" Watermark="Loader" />
-            <TextBox Grid.Column="3" Text="{Binding MinecraftVersion, Mode=TwoWay}" Watermark="Minecraft" />
-            <ComboBox Grid.Column="4" ItemsSource="{Binding Sorts}" SelectedItem="{Binding SelectedSort}" />
-            <Button Grid.Column="5" Content="Buscar" Command="{Binding SearchCommand}" Background="#7C5CFF" Foreground="White" />
-        </Grid>
+        <!-- Filters bar -->
+        <Border Grid.Row="1" Margin="28,16,28,16" Padding="16"
+                Background="{DynamicResource Brush.Surface}">
+            <StackPanel Spacing="12">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                    <TextBox Text="{Binding SearchText, Mode=TwoWay}"
+                             PlaceholderText="{Binding SearchPlaceholder}" />
+                    <Button Grid.Column="1" Content="{Binding SearchButtonLabel}"
+                            Command="{Binding SearchCommand}" Classes="Primary" Padding="18,8" />
+                </Grid>
+                <WrapPanel>
+                    <ComboBox ItemsSource="{Binding Sources}" SelectedItem="{Binding SelectedSource}"
+                              Width="110" Margin="0,0,6,6" />
+                    <ComboBox ItemsSource="{Binding ProjectTypes}" SelectedItem="{Binding SelectedProjectType}"
+                              Width="120" Margin="0,0,6,6" />
+                    <ComboBox ItemsSource="{Binding Loaders}" SelectedItem="{Binding SelectedLoader}"
+                              Width="100" Margin="0,0,6,6" />
+                    <TextBox Text="{Binding MinecraftVersion, Mode=TwoWay}"
+                             PlaceholderText="{Binding VersionPlaceholder}"
+                             Width="90" Margin="0,0,6,6" />
+                    <ComboBox ItemsSource="{Binding Sorts}" SelectedItem="{Binding SelectedSort}"
+                              Width="110" Margin="0,0,0,6" />
+                </WrapPanel>
+            </StackPanel>
+        </Border>
 
-        <Grid Grid.Row="2" RowDefinitions="Auto,*" RowSpacing="12">
-            <TextBlock Text="{Binding StatusText}" Foreground="#7CE1C4" />
-            <ScrollViewer Grid.Row="1">
-                <ItemsControl ItemsSource="{Binding Projects}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:ModrinthProject">
-                            <Border Background="#171D28" CornerRadius="18" Padding="16" Margin="0,0,0,10" BorderBrush="#263145" BorderThickness="1">
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
-                                    <StackPanel Spacing="6">
-                                        <TextBlock Text="{Binding Title}" Foreground="White" FontSize="18" FontWeight="SemiBold" />
-                                        <TextBlock Text="{Binding Description}" Foreground="#A6B5CB" TextWrapping="Wrap" />
-                                        <TextBlock Text="{Binding Author, StringFormat='Autor: {0}'}" Foreground="#8B98AA" />
-                                        <TextBlock Text="{Binding LoaderText, StringFormat='Loader: {0}'}" Foreground="#7CE1C4" />
+        <!-- Status -->
+        <Border Grid.Row="2" IsVisible="{Binding IsBusy}" Background="{DynamicResource Brush.Surface}"
+                Padding="12,8" Margin="28,0,28,12" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                <Border Width="12" Height="12" Background="{DynamicResource Brush.Primary}" />
+                <TextBlock Grid.Column="1" Text="{Binding StatusText}"
+                           Foreground="{DynamicResource Brush.ForegroundMuted}" FontSize="12"
+                           VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <!-- Results -->
+        <ScrollViewer Grid.Row="2" ScrollChanged="OnScrollChanged" Margin="28,0,28,28">
+            <Grid>
+                <StackPanel IsVisible="{Binding HasResults}" Spacing="8">
+                    <ItemsControl ItemsSource="{Binding Projects}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><StackPanel Spacing="8" /></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:ProjectItem">
+                                <Border Background="{DynamicResource Brush.Surface}" Padding="16">
+                                    <StackPanel Spacing="8">
+                                        <!-- Row 1: Icon + Title + Button -->
+                                        <Grid ColumnDefinitions="52,*,Auto" ColumnSpacing="14">
+                                            <Border Width="52" Height="52" Background="{DynamicResource Brush.SurfaceAlt}"
+                                                    VerticalAlignment="Top">
+                                                <Grid>
+                                                    <TextBlock Text="{Binding ProjectType}" FontSize="18"
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    <Image Source="{Binding Icon}" Width="52" Height="52"
+                                                           Stretch="UniformToFill" />
+                                                </Grid>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="Bold"
+                                                               Foreground="{DynamicResource Brush.ForegroundMain}"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <Border Classes="Badge">
+                                                        <TextBlock Text="{Binding Source}" />
+                                                    </Border>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                                    <TextBlock Text="{Binding Author, StringFormat='@{0}'}"
+                                                               Foreground="{DynamicResource Brush.Accent}" FontSize="12" />
+                                                    <TextBlock Text="·" Foreground="{DynamicResource Brush.ForegroundDim}" FontSize="12" />
+                                                    <TextBlock Text="{Binding Downloads, StringFormat='↓ {0:N0}'}"
+                                                               Foreground="{DynamicResource Brush.ForegroundDim}" FontSize="12" />
+                                                    <TextBlock Text="·" Foreground="{DynamicResource Brush.ForegroundDim}" FontSize="12" />
+                                                    <TextBlock Text="{Binding Follows, StringFormat='★ {0:N0}'}"
+                                                               Foreground="{DynamicResource Brush.ForegroundDim}" FontSize="12" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                            <Button Grid.Column="2"
+                                                    Content="{Binding $parent[UserControl].DataContext.InstallButtonLabel}"
+                                                    Command="{Binding $parent[ItemsControl].DataContext.InstallCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Classes="Primary" Padding="14,8" FontSize="12"
+                                                    VerticalAlignment="Top"
+                                                    IsVisible="{Binding InstallState, Converter={x:Static helpers:InstallStateConverters.IsIdle}}" />
+                                            <Button Grid.Column="2"
+                                                    Content="Instalando..."
+                                                    Classes="Primary" Padding="14,8" FontSize="12"
+                                                    VerticalAlignment="Top" IsEnabled="False"
+                                                    IsVisible="{Binding InstallState, Converter={x:Static helpers:InstallStateConverters.IsInstalling}}" />
+                                            <Button Grid.Column="2"
+                                                    Content="✓ Instalado"
+                                                    Classes="Secondary" Padding="14,8" FontSize="12"
+                                                    VerticalAlignment="Top" IsEnabled="False"
+                                                    IsVisible="{Binding InstallState, Converter={x:Static helpers:InstallStateConverters.IsInstalled}}" />
+                                            <Button Grid.Column="2"
+                                                    Content="⚠ Erro"
+                                                    Classes="Danger" Padding="14,8" FontSize="12"
+                                                    VerticalAlignment="Top"
+                                                    Command="{Binding $parent[ItemsControl].DataContext.InstallCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    IsVisible="{Binding InstallState, Converter={x:Static helpers:InstallStateConverters.IsError}}" />
+                                        </Grid>
+                                        <!-- Description -->
+                                        <TextBlock Text="{Binding Description}"
+                                                   Foreground="{DynamicResource Brush.ForegroundMuted}"
+                                                   TextWrapping="Wrap" FontSize="12" MaxHeight="34"
+                                                   TextTrimming="WordEllipsis" />
+                                        <!-- Progress bar (visible only when installing) -->
+                                        <StackPanel Spacing="4"
+                                                    IsVisible="{Binding InstallState, Converter={x:Static helpers:InstallStateConverters.IsInstalling}}">
+                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding InstallProgress}"
+                                                         Height="4" HorizontalAlignment="Stretch" />
+                                            <TextBlock Text="{Binding InstallProgressText}" FontSize="11"
+                                                       Foreground="{DynamicResource Brush.ForegroundMuted}"
+                                                       TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+                                        <!-- Error text -->
+                                        <TextBlock Text="{Binding InstallProgressText}" FontSize="11"
+                                                   Foreground="{DynamicResource Brush.Error}"
+                                                   TextTrimming="CharacterEllipsis" TextWrapping="Wrap" MaxHeight="28"
+                                                   IsVisible="{Binding InstallState, Converter={x:Static helpers:InstallStateConverters.IsError}}" />
+                                        <!-- Tags -->
+                                        <WrapPanel>
+                                            <Border Classes="Tag" Margin="0,0,4,4">
+                                                <TextBlock Text="{Binding ProjectType}" />
+                                            </Border>
+                                            <Border Classes="Tag" Margin="0,0,4,4">
+                                                <TextBlock Text="{Binding VersionText}" />
+                                            </Border>
+                                            <Border Classes="Tag" Margin="0,0,0,4">
+                                                <TextBlock Text="{Binding LoaderText}" />
+                                            </Border>
+                                        </WrapPanel>
                                     </StackPanel>
-                                    <StackPanel Grid.Column="1" Spacing="8" Width="150">
-                                        <TextBlock Text="{Binding Downloads, StringFormat='↓ {0}'}" Foreground="#A6B5CB" HorizontalAlignment="Right" />
-                                        <TextBlock Text="{Binding Follows, StringFormat='★ {0}'}" Foreground="#A6B5CB" HorizontalAlignment="Right" />
-                                        <TextBlock Text="{Binding VersionText}" Foreground="#A6B5CB" HorizontalAlignment="Right" />
-                                        <Button Content="Instalar" Command="{Binding $parent[UserControl].DataContext.InstallCommand}" CommandParameter="{Binding}" />
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-        </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- Empty state -->
+                <StackPanel IsVisible="{Binding HasResults, Converter={x:Static conv:BoolConverters.Not}}"
+                            VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16" Margin="24">
+                    <Border Width="56" Height="56" Background="{DynamicResource Brush.SurfaceAlt}"
+                            HorizontalAlignment="Center">
+                        <TextBlock Text="🔍" FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Nenhum resultado encontrado" FontSize="16" FontWeight="Bold"
+                                   Foreground="{DynamicResource Brush.ForegroundMuted}" HorizontalAlignment="Center" />
+                        <TextBlock Text="Tente alterar os filtros ou termos de busca" FontSize="13"
+                                   Foreground="{DynamicResource Brush.ForegroundDim}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </UserControl>

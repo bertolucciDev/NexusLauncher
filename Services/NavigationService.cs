@@ -5,6 +5,9 @@ namespace NexusLauncher.Services;
 
 public class NavigationService : ObservableObject
 {
+    private static readonly NavigationService _instance = new();
+    public static NavigationService Instance => _instance;
+
     private ViewModelBase? _currentView;
 
     public ViewModelBase? CurrentView

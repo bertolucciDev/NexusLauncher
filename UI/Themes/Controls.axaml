@@ -1,0 +1,215 @@
+<Styles xmlns="https://github.com/avaloniaui"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- === SIDEBAR BUTTON === -->
+    <Style Selector="Button.Sidebar">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMuted}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Height" Value="44" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Padding" Value="16,0" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="BorderThickness" Value="3,0,0,0" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+    <Style Selector="Button.Sidebar:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMain}" />
+        <Setter Property="Background" Value="#14142A" />
+    </Style>
+    <Style Selector="Button.Sidebar.Active">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMain}" />
+        <Setter Property="Background" Value="#14142A" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Accent}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="Button.Sidebar.Active:pointerover">
+        <Setter Property="Background" Value="#1C1C38" />
+    </Style>
+
+    <!-- === PRIMARY BUTTON === -->
+    <Style Selector="Button.Primary">
+        <Setter Property="Background" Value="{DynamicResource Brush.Primary}" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.OnPrimary}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="24,14" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+    <Style Selector="Button.Primary:pointerover">
+        <Setter Property="Background" Value="{DynamicResource Brush.PrimaryHover}" />
+    </Style>
+    <Style Selector="Button.Primary:pressed">
+        <Setter Property="Background" Value="#5B21B6" />
+    </Style>
+    <Style Selector="Button.Primary:disabled">
+        <Setter Property="Opacity" Value="0.35" />
+    </Style>
+
+    <!-- === SECONDARY BUTTON === -->
+    <Style Selector="Button.Secondary">
+        <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt}" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMuted}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="20,10" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="Button.Secondary:pointerover">
+        <Setter Property="Background" Value="{DynamicResource Brush.Border}" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMain}" />
+    </Style>
+    <Style Selector="Button.Secondary:pressed">
+        <Setter Property="Background" Value="#3A3A50" />
+    </Style>
+    <Style Selector="Button.Secondary:disabled">
+        <Setter Property="Opacity" Value="0.35" />
+    </Style>
+
+    <!-- === ACCENT BUTTON (green, for play/actions) === -->
+    <Style Selector="Button.Accent">
+        <Setter Property="Background" Value="{DynamicResource Brush.Accent}" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.OnPrimary}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="24,14" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="FontSize" Value="15" />
+    </Style>
+    <Style Selector="Button.Accent:pointerover">
+        <Setter Property="Background" Value="{DynamicResource Brush.SecondaryHover}" />
+    </Style>
+    <Style Selector="Button.Accent:pressed">
+        <Setter Property="Background" Value="#2D6B1E" />
+    </Style>
+    <Style Selector="Button.Accent:disabled">
+        <Setter Property="Opacity" Value="0.35" />
+    </Style>
+
+    <!-- === DANGER BUTTON === -->
+    <Style Selector="Button.Danger">
+        <Setter Property="Background" Value="{DynamicResource Brush.Danger}" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.OnPrimary}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="20,10" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="Button.Danger:pointerover">
+        <Setter Property="Background" Value="#A93226" />
+    </Style>
+    <Style Selector="Button.Danger:pressed">
+        <Setter Property="Background" Value="#922B21" />
+    </Style>
+    <Style Selector="Button.Danger:disabled">
+        <Setter Property="Opacity" Value="0.35" />
+    </Style>
+
+    <!-- === ICON BUTTON === -->
+    <Style Selector="Button.Icon">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMuted}" />
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="16" />
+    </Style>
+    <Style Selector="Button.Icon:pointerover">
+        <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt}" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMain}" />
+    </Style>
+    <Style Selector="Button.Icon:pressed">
+        <Setter Property="Background" Value="{DynamicResource Brush.Border}" />
+    </Style>
+
+    <!-- === TAB BUTTON === -->
+    <Style Selector="Button.Tab">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMuted}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Padding" Value="18,12" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+    <Style Selector="Button.Tab:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMain}" />
+    </Style>
+    <Style Selector="Button.Tab.Active">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Accent}" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <!-- === BADGE === -->
+    <Style Selector="Border.Badge">
+        <Setter Property="Background" Value="{DynamicResource Brush.Accent}" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="Padding" Value="6,2" />
+    </Style>
+    <Style Selector="Border.Badge TextBlock">
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <!-- === CARD === -->
+    <Style Selector="Border.Card">
+        <Setter Property="Background" Value="{DynamicResource Brush.Surface}" />
+        <Setter Property="Padding" Value="16" />
+    </Style>
+
+    <!-- === TAG === -->
+    <Style Selector="Border.Tag">
+        <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt}" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="Padding" Value="7,3" />
+    </Style>
+    <Style Selector="Border.Tag TextBlock">
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMuted}" />
+    </Style>
+
+    <!-- === TEXTBOX === -->
+    <Style Selector="TextBox">
+        <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt}" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMain}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="Padding" Value="10,8" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="TextBox:focus">
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Primary}" />
+    </Style>
+
+    <!-- === COMBOBOX === -->
+    <Style Selector="ComboBox">
+        <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt}" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMain}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="Padding" Value="10,8" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <!-- === CHECKBOX === -->
+    <Style Selector="CheckBox">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMuted}" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <!-- === SLIDER === -->
+    <Style Selector="Slider">
+        <Setter Property="Background" Value="{DynamicResource Brush.Border}" />
+    </Style>
+
+    <!-- === SCROLLBAR === -->
+    <Style Selector="ScrollBar">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="ScrollBar Thumb">
+        <Setter Property="Background" Value="{DynamicResource Brush.Border}" />
+    </Style>
+</Styles>

@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace NexusLauncher.Views;
 
-public partial class HomeView : UserControl
+public partial class CreateInstanceDialog : UserControl
 {
-    public HomeView()
+    public CreateInstanceDialog()
     {
         InitializeComponent();
     }

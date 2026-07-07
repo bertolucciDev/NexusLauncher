@@ -94,3 +94,5 @@ D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\refint\NexusLauncher.dl
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\NexusLauncher.pdb
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\NexusLauncher.genruntimeconfig.cache
 D:\Projetos\NexusLauncher\NexusLauncher\obj\Debug\net8.0\ref\NexusLauncher.dll
+D:\Projetos\NexusLauncher\NexusLauncher\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+D:\Projetos\NexusLauncher\NexusLauncher\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll

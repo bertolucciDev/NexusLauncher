@@ -30,7 +30,19 @@ build_property.EnableGeneratedComInterfaceComImportInterop =
 [D:/Projetos/NexusLauncher/NexusLauncher/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[D:/Projetos/NexusLauncher/NexusLauncher/Views/HomeView.axaml]
+[D:/Projetos/NexusLauncher/NexusLauncher/UI/Themes/Colors.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Projetos/NexusLauncher/NexusLauncher/UI/Themes/Controls.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Projetos/NexusLauncher/NexusLauncher/UI/Themes/Typography.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Projetos/NexusLauncher/NexusLauncher/Views/CreateInstanceDialog.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Projetos/NexusLauncher/NexusLauncher/Views/InstancesView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [D:/Projetos/NexusLauncher/NexusLauncher/Views/MainWindow.axaml]
@@ -42,8 +54,14 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 [D:/Projetos/NexusLauncher/NexusLauncher/Views/PlayView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[D:/Projetos/NexusLauncher/NexusLauncher/Views/ProfileView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Projetos/NexusLauncher/NexusLauncher/Views/SelectInstanceView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [D:/Projetos/NexusLauncher/NexusLauncher/Views/SettingsView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[D:/Projetos/NexusLauncher/NexusLauncher/Views/VersionsView.axaml]
-build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+[D:/Projetos/NexusLauncher/NexusLauncher/Assets/Images/NexusLogo.png]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaResource

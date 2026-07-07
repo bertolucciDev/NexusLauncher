@@ -16,6 +16,14 @@ public class LauncherSettings
     public string LastVersionCategory { get; set; } = "Releases";
     public string JavaPath { get; set; } = string.Empty;
     public string Theme { get; set; } = "Dark";
+    public string Language { get; set; } = "pt-BR";
     public bool KeepLauncherInBackground { get; set; } = true;
     public List<string> FavoriteVersions { get; set; } = new();
+    public List<string> EnabledCategories { get; set; } = new();
+    public string CurseForgeApiKey { get; set; } = string.Empty;
+    public string JvmArgs { get; set; } = string.Empty;
+    public bool DownloadJavaAutomatically { get; set; } = true;
+    public bool AutoUpdateLauncher { get; set; } = true;
+    public List<string> FriendUsernames { get; set; } = new();
+    public MinecraftAccount? Account { get; set; }
 }

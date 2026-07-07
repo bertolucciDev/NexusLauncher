@@ -1,66 +1,159 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:NexusLauncher.ViewModels"
+        xmlns:views="using:NexusLauncher.Views"
         x:Class="NexusLauncher.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Width="1280"
-        Height="760"
-        MinWidth="1060"
-        MinHeight="680"
-        Background="#0F1218"
+        Width="1100" Height="680"
+        MinWidth="840" MinHeight="520"
+        CanResize="True"
+        Background="{DynamicResource Brush.Background}"
         Title="Nexus Launcher">
 
-    <Window.Styles>
-        <Style Selector="Button.nav">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="#A9B4C3" />
-            <Setter Property="HorizontalContentAlignment" Value="Left" />
-            <Setter Property="Padding" Value="14,12" />
-            <Setter Property="CornerRadius" Value="12" />
-            <Setter Property="FontSize" Value="14" />
-        </Style>
-        <Style Selector="Button.nav:pointerover">
-            <Setter Property="Background" Value="#1B2330" />
-            <Setter Property="Foreground" Value="White" />
-        </Style>
-    </Window.Styles>
+    <Panel>
+        <Panel.KeyBindings>
+            <KeyBinding Gesture="Ctrl+1" Command="{Binding GoPlayCommand}" />
+            <KeyBinding Gesture="Ctrl+2" Command="{Binding GoInstancesCommand}" />
+            <KeyBinding Gesture="Ctrl+3" Command="{Binding GoModsCommand}" />
+            <KeyBinding Gesture="Ctrl+4" Command="{Binding GoProfileCommand}" />
+            <KeyBinding Gesture="Ctrl+5" Command="{Binding GoSettingsCommand}" />
+            <KeyBinding Gesture="Escape" Command="{Binding CloseDialogCommand}" />
+        </Panel.KeyBindings>
 
-    <Grid ColumnDefinitions="260,*">
-        <Border Grid.Column="0" Background="#111620" Padding="20" BorderBrush="#202938" BorderThickness="0,0,1,0">
-            <Grid RowDefinitions="Auto,*,Auto">
-                <StackPanel Spacing="4">
-                    <Grid ColumnDefinitions="44,*" ColumnSpacing="12">
-                        <Border Width="44" Height="44" CornerRadius="14" Background="#7C5CFF">
-                            <TextBlock Text="N" Foreground="White" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="Nexus Launcher" FontSize="20" FontWeight="SemiBold" Foreground="White" />
-                            <TextBlock Text="Minecraft, do seu jeito" FontSize="12" Foreground="#6F7C8F" />
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
+        <Grid ColumnDefinitions="200,Auto,*">
+            <!-- ==================== SIDEBAR ==================== -->
+            <Border Background="{DynamicResource Brush.Sidebar}" BorderThickness="0,0,1,0"
+                    BorderBrush="{DynamicResource Brush.Border}">
+                <Grid RowDefinitions="Auto,*,Auto">
+                    <!-- Logo -->
+                    <Border Height="56" Padding="16,0" Background="{DynamicResource Brush.Surface}">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Border Width="28" Height="28" Background="{DynamicResource Brush.Primary}"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="N" FontSize="14" FontWeight="Bold"
+                                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="0">
+                                <TextBlock Text="Nexus" FontSize="14" FontWeight="Bold"
+                                           Foreground="{DynamicResource Brush.ForegroundMain}" />
+                                <TextBlock Text="Launcher" FontSize="10"
+                                           Foreground="{DynamicResource Brush.ForegroundDim}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
 
-                <StackPanel Grid.Row="1" Spacing="8" Margin="0,34,0,0">
-                    <TextBlock Text="NAVEGAÇÃO" Foreground="#596579" FontSize="11" FontWeight="SemiBold" Margin="14,0,0,6" />
-                    <Button Classes="nav" Content="⌂   Home" Click="HomeClick" />
-                    <Button Classes="nav" Content="▶   Jogar" Click="PlayClick" />
-                    <Button Classes="nav" Content="▦   Versões" Click="VersionsClick" />
-                    <Button Classes="nav" Content="⬡   Modrinth" Click="ModsClick" />
-                    <Button Classes="nav" Content="⚙   Configurações" Click="SettingsClick" />
-                </StackPanel>
-
-                <Border Grid.Row="2" Background="#171D28" CornerRadius="16" Padding="14">
-                    <StackPanel Spacing="6">
-                        <TextBlock Text="Status" Foreground="#7CE1C4" FontSize="12" FontWeight="SemiBold" />
-                        <TextBlock Text="Pronto para jogar" Foreground="White" FontSize="14" />
-                        <TextBlock Text="Modrinth e downloads integrados ao fluxo do launcher." Foreground="#7F8CA0" FontSize="12" TextWrapping="Wrap" />
+                    <!-- Nav Items -->
+                    <StackPanel Grid.Row="1" Margin="0,8,0,0">
+                        <Button x:Name="NavPlay" Content="  ▶  Jogar" Classes="Sidebar" Click="PlayClick" />
+                        <Button x:Name="NavMods" Content="  ⊞  NexusMods" Classes="Sidebar" Click="ModsClick" />
+                        <Button x:Name="NavInstances" Content="  ⚡  Instâncias" Classes="Sidebar" Click="InstancesClick" />
+                        <Button x:Name="NavProfile" Content="  ●  Perfil" Classes="Sidebar" Click="ProfileClick" />
+                        <Button x:Name="NavSettings" Content="  ⚙  Configurações" Classes="Sidebar" Click="SettingsClick" />
                     </StackPanel>
+
+                    <!-- Bottom section -->
+                    <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Brush.Border}"
+                            Padding="16,12">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Nexus Launcher v2" FontSize="11"
+                                       Foreground="{DynamicResource Brush.ForegroundDim}" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Separator line -->
+            <Border Grid.Column="1" Width="1" Background="{DynamicResource Brush.Border}" />
+
+            <!-- ==================== MAIN CONTENT ==================== -->
+            <Grid Grid.Column="2" RowDefinitions="Auto,*,Auto">
+                <!-- Header -->
+                <Border Background="{DynamicResource Brush.Surface}" Padding="20,0" Height="56"
+                        BorderThickness="0" BorderBrush="{DynamicResource Brush.Border}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <!-- Search -->
+                        <Border Background="{DynamicResource Brush.SurfaceAlt}" CornerRadius="2"
+                                MaxWidth="320" HorizontalAlignment="Left" MinWidth="200" VerticalAlignment="Center">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <TextBlock Text="🔍" FontSize="13" Margin="10,0,0,0" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource Brush.ForegroundDim}" />
+                                <TextBox Grid.Column="1" Text="{Binding SearchText, Mode=TwoWay}"
+                                         PlaceholderText="Buscar mods, instâncias..."
+                                         Background="Transparent" BorderThickness="0" FontSize="13"
+                                         Foreground="{DynamicResource Brush.ForegroundMain}"
+                                         CornerRadius="0" Padding="6,7" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Profile badge -->
+                        <Border Grid.Column="1" Padding="6,0" VerticalAlignment="Center">
+                            <Grid ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="8">
+                                <Border Width="28" Height="28" CornerRadius="2"
+                                        Background="{DynamicResource Brush.SurfaceAlt}">
+                                    <TextBlock Text="●" FontSize="14"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource Brush.ForegroundMuted}" />
+                                </Border>
+                                <TextBlock Grid.Column="1" Text="{Binding ProfileNickname}" FontSize="13"
+                                           Foreground="{DynamicResource Brush.ForegroundMain}"
+                                           VerticalAlignment="Center" />
+                                <Border Grid.Column="2" Width="1" Height="20"
+                                        Background="{DynamicResource Brush.Border}"
+                                        VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Content Area -->
+                <ContentControl Grid.Row="1" Content="{Binding Navigation.CurrentView}" />
+
+                <!-- Footer - Global download progress -->
+                <Border Grid.Row="2" Background="{DynamicResource Brush.Surface}"
+                        BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Brush.Border}"
+                        IsVisible="{Binding DownloadManager.GlobalBusy}">
+                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="16,8" ColumnSpacing="12">
+                        <Border Width="8" Height="8" Background="{DynamicResource Brush.Primary}"
+                                VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding DownloadManager.GlobalFile}" FontSize="12"
+                                       Foreground="{DynamicResource Brush.ForegroundMain}"
+                                       TextTrimming="CharacterEllipsis" />
+                            <ProgressBar Minimum="0" Maximum="100"
+                                         Value="{Binding DownloadManager.GlobalProgress}"
+                                         Height="3" HorizontalAlignment="Stretch" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="2" Text="{Binding DownloadManager.GlobalText}" FontSize="11"
+                                   Foreground="{DynamicResource Brush.ForegroundMuted}"
+                                   VerticalAlignment="Center" />
+                    </Grid>
                 </Border>
             </Grid>
+        </Grid>
+
+        <!-- ==================== OVERLAYS ==================== -->
+        <Border Background="#A0000000" IsVisible="{Binding DialogOverlay.Visible}">
+            <Border.Transitions>
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                </Transitions>
+            </Border.Transitions>
+            <Border HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="{DynamicResource Brush.Surface}" Padding="24" MinWidth="380">
+                <views:CreateInstanceDialog DataContext="{Binding DialogOverlay}" />
+            </Border>
         </Border>
 
-        <Border Grid.Column="1" Padding="30" Background="#0F1218">
-            <ContentControl Content="{Binding Navigation.CurrentView}" />
+        <Border Background="#A0000000" IsVisible="{Binding SelectOverlay.Visible}">
+            <Border.Transitions>
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                </Transitions>
+            </Border.Transitions>
+            <Border HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="{DynamicResource Brush.Surface}" Padding="24" MinWidth="400">
+                <views:SelectInstanceView DataContext="{Binding SelectOverlay}" />
+            </Border>
         </Border>
-    </Grid>
+    </Panel>
 </Window>

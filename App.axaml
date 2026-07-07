@@ -8,8 +8,18 @@
         <local:ViewLocator/>
     </Application.DataTemplates>
 
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://NexusLauncher/UI/Themes/Colors.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://NexusLauncher/UI/Themes/Typography.axaml" />
+        <StyleInclude Source="avares://NexusLauncher/UI/Themes/Controls.axaml" />
     </Application.Styles>
 
 </Application>

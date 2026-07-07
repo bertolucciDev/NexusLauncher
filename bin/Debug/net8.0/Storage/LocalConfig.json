@@ -1,15 +1,28 @@
 {
-  "Nickname": "Foxzinho112",
-  "AllocatedRamGb": 4,
+  "Nickname": "Player",
+  "AllocatedRamGb": 5,
   "CloseLauncherOnGameStart": true,
-  "ReopenLauncherAfterGameClose": false,
-  "MinimizeLauncherOnGameStart": true,
+  "ReopenLauncherAfterGameClose": true,
+  "MinimizeLauncherOnGameStart": false,
   "Fullscreen": false,
   "Resolution": "1600x900",
-  "LastPlayedVersion": "26.2",
+  "LastPlayedVersion": "1.21.1",
+  "MinecraftDirectory": "C:\\Users\\luiso\\AppData\\Roaming\\.minecraft",
+  "LastVersionCategory": "Releases",
+  "JavaPath": "C:\\Users\\luiso\\AppData\\Roaming\\Code\\User\\globalStorage\\pleiades.java-extension-pack-jdk\\java\\25\\bin\\java.exe",
+  "Theme": "Dark",
+  "Language": "pt-BR",
+  "KeepLauncherInBackground": true,
   "FavoriteVersions": [
     "1.16",
     "1.0",
-    "26.2"
-  ]
+    "26.2",
+    "1.20.2"
+  ],
+  "EnabledCategories": [
+    "Release",
+    "Custom"
+  ],
+  "CurseForgeApiKey": "$2a$10$1iqB1fKBMG0lrjbhWScgmeRgV2JTLHjXMKb1IUvT7UeUP68xv8kiu",
+  "Account": null
 }

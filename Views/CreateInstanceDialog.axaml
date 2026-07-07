@@ -1,0 +1,55 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:vm="using:NexusLauncher.ViewModels"
+               x:Class="NexusLauncher.Views.CreateInstanceDialog"
+               x:DataType="vm:CreateInstanceOverlayViewModel">
+
+    <StackPanel Spacing="20">
+        <StackPanel Spacing="4">
+            <TextBlock Text="{Binding TitleLabel}" FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource Brush.ForegroundMain}" />
+            <TextBlock Text="{Binding SubtitleLabel}" FontSize="13"
+                       Foreground="{DynamicResource Brush.ForegroundMuted}" />
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+            <TextBlock Text="{Binding NameLabel}" FontSize="12" FontWeight="Bold"
+                       Foreground="{DynamicResource Brush.Accent}" />
+            <TextBox Text="{Binding InstanceName}" PlaceholderText="{Binding NamePlaceholder}" />
+            <TextBlock Text="{Binding NameErrorText}" Foreground="{DynamicResource Brush.Error}" FontSize="11" />
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+            <TextBlock Text="{Binding VersionLabelField}" FontSize="12" FontWeight="Bold"
+                       Foreground="{DynamicResource Brush.Accent}" />
+            <ComboBox ItemsSource="{Binding AvailableVersions}" SelectedItem="{Binding SelectedVersion}"
+                      HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <TextBlock Text="{Binding}" Foreground="{DynamicResource Brush.ForegroundMain}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+            <TextBlock Text="{Binding LoaderLabel}" FontSize="12" FontWeight="Bold"
+                       Foreground="{DynamicResource Brush.Accent}" />
+            <ComboBox ItemsSource="{Binding AvailableLoaders}" SelectedItem="{Binding SelectedLoader}"
+                      HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <TextBlock Text="{Binding}" Foreground="{DynamicResource Brush.ForegroundMain}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
+            <Button Grid.Column="0" Content="{Binding CancelLabel}" Classes="Secondary" HorizontalAlignment="Stretch"
+                    Command="{Binding CancelCommand}" />
+            <Button Grid.Column="1" Content="{Binding CreateLabel}" Classes="Primary" HorizontalAlignment="Stretch"
+                    Command="{Binding CreateCommand}" />
+        </Grid>
+    </StackPanel>
+</UserControl>

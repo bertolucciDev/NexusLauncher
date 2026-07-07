@@ -1,0 +1,140 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:NexusLauncher.ViewModels"
+    xmlns:conv="using:NexusLauncher.Helpers"
+    x:Class="NexusLauncher.Views.ProfileView"
+    x:DataType="vm:ProfileViewModel">
+
+    <Grid RowDefinitions="Auto,*" Background="Transparent">
+        <StackPanel Margin="28,24,28,0" Spacing="4">
+            <TextBlock Text="{Binding Title}" FontSize="22" FontWeight="Bold"
+                       Foreground="{DynamicResource Brush.ForegroundMain}" />
+            <TextBlock Text="Gerencie sua conta do Minecraft" FontSize="13"
+                       Foreground="{DynamicResource Brush.ForegroundMuted}"
+                       IsVisible="{Binding IsLoggedIn, Converter={x:Static conv:BoolConverters.Not}}" />
+            <TextBlock Text="Conta conectada" FontSize="13"
+                       Foreground="{DynamicResource Brush.Accent}"
+                       IsVisible="{Binding IsLoggedIn}" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" Spacing="24" Width="420" Margin="28,16,28,28">
+
+            <!-- ===== NOT LOGGED IN ===== -->
+            <StackPanel Spacing="20" IsVisible="{Binding IsLoggedIn, Converter={x:Static conv:BoolConverters.Not}}">
+                <Border Background="{DynamicResource Brush.Surface}" Padding="32">
+                    <StackPanel Spacing="24" HorizontalAlignment="Center">
+                        <!-- Avatar -->
+                        <Border Width="80" Height="80" Background="{DynamicResource Brush.SurfaceAlt}"
+                                HorizontalAlignment="Center" ClipToBounds="True">
+                            <Panel>
+                                <TextBlock Text="⛏" FontSize="34"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource Brush.ForegroundMuted}"
+                                           IsVisible="{Binding AvatarBitmap, Converter={x:Static conv:ObjectConverters.IsNull}}" />
+                                <Image Source="{Binding AvatarBitmap}" Width="80" Height="80"
+                                       IsVisible="{Binding AvatarBitmap, Converter={x:Static conv:ObjectConverters.IsNotNull}}"
+                                       Stretch="UniformToFill" />
+                            </Panel>
+                        </Border>
+
+                        <TextBlock Text="Conecte sua conta Minecraft"
+                                   FontSize="17" FontWeight="Bold" HorizontalAlignment="Center"
+                                   Foreground="{DynamicResource Brush.ForegroundMain}" />
+                        <TextBlock Text="Para jogar online com sua skin e progresso, ou continue sem conexao."
+                                   FontSize="13" HorizontalAlignment="Center" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource Brush.ForegroundMuted}"
+                                   TextAlignment="Center" />
+
+                        <Button Content="Entrar com Microsoft"
+                                Command="{Binding LoginMicrosoftCommand}"
+                                Classes="Primary" HorizontalAlignment="Stretch" Height="46" FontSize="15" />
+
+                        <Border HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource Brush.Border}" />
+
+                        <StackPanel Spacing="10" HorizontalAlignment="Stretch">
+                            <TextBlock Text="Ou jogue offline" FontSize="12" FontWeight="Bold"
+                                       Foreground="{DynamicResource Brush.ForegroundDim}"
+                                       HorizontalAlignment="Center" />
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                <TextBox Text="{Binding Nickname, Mode=TwoWay}"
+                                         PlaceholderText="Seu nickname" FontSize="14" />
+                                <Button Grid.Column="1" Content="Offline"
+                                        Command="{Binding LoginOfflineCommand}"
+                                        Classes="Secondary" Padding="16,8" FontSize="13" />
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- ===== LOGGED IN ===== -->
+            <StackPanel Spacing="20" IsVisible="{Binding IsLoggedIn}">
+                <Border Background="{DynamicResource Brush.Surface}" Padding="32">
+                    <StackPanel Spacing="24" HorizontalAlignment="Center">
+                        <!-- Avatar -->
+                        <Border Width="80" Height="80" Background="{DynamicResource Brush.SurfaceAlt}"
+                                HorizontalAlignment="Center" ClipToBounds="True">
+                            <Panel>
+                                <TextBlock Text="{Binding AccountName}"
+                                           FontSize="28"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource Brush.ForegroundMuted}"
+                                           IsVisible="{Binding AvatarBitmap, Converter={x:Static conv:ObjectConverters.IsNull}}" />
+                                <Image Source="{Binding AvatarBitmap}" Width="80" Height="80"
+                                       IsVisible="{Binding AvatarBitmap, Converter={x:Static conv:ObjectConverters.IsNotNull}}"
+                                       Stretch="UniformToFill" />
+                            </Panel>
+                        </Border>
+
+                        <StackPanel HorizontalAlignment="Center" Spacing="4">
+                            <TextBlock Text="{Binding AccountName}" FontSize="20" FontWeight="Bold"
+                                       Foreground="{DynamicResource Brush.ForegroundMain}"
+                                       HorizontalAlignment="Center" />
+                            <Border Classes="Badge" HorizontalAlignment="Center" Padding="10,3">
+                                <TextBlock Text="{Binding AccountTypeLabel}" />
+                            </Border>
+                        </StackPanel>
+
+                        <Border HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource Brush.Border}" />
+
+                        <!-- Nickname -->
+                        <StackPanel Spacing="6" Width="280">
+                            <TextBlock Text="Nickname (para exibicao)" FontSize="11" FontWeight="Bold"
+                                       Foreground="{DynamicResource Brush.ForegroundDim}" />
+                            <TextBox Text="{Binding Nickname, Mode=TwoWay}"
+                                     PlaceholderText="Player" FontSize="14" Padding="10,8" />
+                        </StackPanel>
+
+                        <!-- Microsoft refresh -->
+                        <Button Content="Renovar sessao Microsoft"
+                                Command="{Binding RefreshMicrosoftCommand}"
+                                Classes="Secondary" HorizontalAlignment="Stretch" Height="36" FontSize="13"
+                                IsVisible="{Binding HasMicrosoftRefresh}" />
+
+                        <!-- Logout -->
+                        <Button Content="Desconectar"
+                                Command="{Binding LogoutCommand}"
+                                Classes="Danger" HorizontalAlignment="Stretch" Height="40" FontSize="14" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Status -->
+            <TextBlock Text="{Binding StatusMessage}" FontSize="13"
+                       Foreground="{DynamicResource Brush.Accent}"
+                       HorizontalAlignment="Center" TextWrapping="Wrap" />
+
+            <!-- Busy -->
+            <Border Background="{DynamicResource Brush.Surface}" Padding="14,10"
+                    IsVisible="{Binding IsBusy}">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Border Width="12" Height="12" Background="{DynamicResource Brush.Primary}" />
+                    <TextBlock Grid.Column="1" Text="{Binding StatusMessage}"
+                               Foreground="{DynamicResource Brush.ForegroundMuted}" FontSize="12"
+                               VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

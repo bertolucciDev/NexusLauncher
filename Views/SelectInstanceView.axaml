@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NexusLauncher.ViewModels"
+             xmlns:models="using:NexusLauncher.Models"
+             x:Class="NexusLauncher.Views.SelectInstanceView"
+             x:DataType="vm:SelectInstanceOverlayViewModel">
+
+    <StackPanel Spacing="20">
+        <StackPanel Spacing="4">
+            <TextBlock Text="{Binding TitleLabel}" FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource Brush.ForegroundMain}" />
+            <TextBlock Text="{Binding SubtitleLabel}" FontSize="13"
+                       Foreground="{DynamicResource Brush.ForegroundMuted}" />
+        </StackPanel>
+
+        <Border Background="{DynamicResource Brush.SurfaceAlt}" Padding="14,10">
+            <StackPanel Spacing="4">
+                <TextBlock Text="{Binding StatusText}" FontSize="14" FontWeight="Bold"
+                           Foreground="{DynamicResource Brush.ForegroundMain}" />
+                <TextBlock Text="{Binding Project.ProjectType}" FontSize="11"
+                           Foreground="{DynamicResource Brush.Accent}" />
+            </StackPanel>
+        </Border>
+
+        <StackPanel Spacing="6">
+            <TextBlock Text="Instâncias" FontSize="12" FontWeight="Bold"
+                       Foreground="{DynamicResource Brush.Accent}" />
+            <ListBox ItemsSource="{Binding Instances}" SelectedItem="{Binding SelectedInstance}"
+                     MinHeight="120" MaxHeight="280"
+                     Background="{DynamicResource Brush.SurfaceAlt}" BorderThickness="0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:MinecraftInstance">
+                        <Border Padding="12,10" Margin="0,0,0,2"
+                                Background="{DynamicResource Brush.Surface}">
+                            <StackPanel Spacing="3">
+                                <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="Bold"
+                                           Foreground="{DynamicResource Brush.ForegroundMain}" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="{Binding VersionDisplay}" FontSize="11"
+                                               Foreground="{DynamicResource Brush.ForegroundDim}" />
+                                    <TextBlock Text="{Binding LoaderDisplay}" FontSize="11"
+                                               Foreground="{DynamicResource Brush.Accent}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,4,0,0">
+            <Button Grid.Column="0" Content="{Binding CancelLabel}" Classes="Secondary" HorizontalAlignment="Stretch"
+                    Command="{Binding CancelCommand}" />
+            <Button Grid.Column="1" Content="{Binding ConfirmLabel}" Classes="Primary" HorizontalAlignment="Stretch"
+                    Command="{Binding SelectCommand}" />
+        </Grid>
+    </StackPanel>
+</UserControl>

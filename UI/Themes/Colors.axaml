@@ -1,0 +1,88 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Dark">
+            <Color x:Key="Color.Background">#08080E</Color>
+            <Color x:Key="Color.Sidebar">#0C0C18</Color>
+            <Color x:Key="Color.Surface">#14142A</Color>
+            <Color x:Key="Color.SurfaceAlt">#1C1C38</Color>
+            <Color x:Key="Color.Primary">#7C3AED</Color>
+            <Color x:Key="Color.PrimaryHover">#8B5CF6</Color>
+            <Color x:Key="Color.Secondary">#3C8527</Color>
+            <Color x:Key="Color.SecondaryHover">#4A9E32</Color>
+            <Color x:Key="Color.Accent">#52A535</Color>
+            <Color x:Key="Color.AccentGlow">#3C8527</Color>
+            <Color x:Key="Color.Border">#2A2A50</Color>
+            <Color x:Key="Color.ForegroundMain">#EEEFF5</Color>
+            <Color x:Key="Color.ForegroundMuted">#9898B0</Color>
+            <Color x:Key="Color.ForegroundDim">#68687A</Color>
+            <Color x:Key="Color.Danger">#C0392B</Color>
+            <Color x:Key="Color.OnPrimary">#FFFFFF</Color>
+            <Color x:Key="Color.Error">#E74C3C</Color>
+            <Color x:Key="Color.Warning">#F39C12</Color>
+            <Color x:Key="Color.Success">#27AE60</Color>
+
+            <SolidColorBrush x:Key="Brush.Background" Color="{StaticResource Color.Background}" />
+            <SolidColorBrush x:Key="Brush.Sidebar" Color="{StaticResource Color.Sidebar}" />
+            <SolidColorBrush x:Key="Brush.Surface" Color="{StaticResource Color.Surface}" />
+            <SolidColorBrush x:Key="Brush.SurfaceAlt" Color="{StaticResource Color.SurfaceAlt}" />
+            <SolidColorBrush x:Key="Brush.Primary" Color="{StaticResource Color.Primary}" />
+            <SolidColorBrush x:Key="Brush.PrimaryHover" Color="{StaticResource Color.PrimaryHover}" />
+            <SolidColorBrush x:Key="Brush.Secondary" Color="{StaticResource Color.Secondary}" />
+            <SolidColorBrush x:Key="Brush.SecondaryHover" Color="{StaticResource Color.SecondaryHover}" />
+            <SolidColorBrush x:Key="Brush.Accent" Color="{StaticResource Color.Accent}" />
+            <SolidColorBrush x:Key="Brush.AccentGlow" Color="{StaticResource Color.AccentGlow}" />
+            <SolidColorBrush x:Key="Brush.Border" Color="{StaticResource Color.Border}" />
+            <SolidColorBrush x:Key="Brush.ForegroundMain" Color="{StaticResource Color.ForegroundMain}" />
+            <SolidColorBrush x:Key="Brush.ForegroundMuted" Color="{StaticResource Color.ForegroundMuted}" />
+            <SolidColorBrush x:Key="Brush.ForegroundDim" Color="{StaticResource Color.ForegroundDim}" />
+            <SolidColorBrush x:Key="Brush.Danger" Color="{StaticResource Color.Danger}" />
+            <SolidColorBrush x:Key="Brush.OnPrimary" Color="{StaticResource Color.OnPrimary}" />
+            <SolidColorBrush x:Key="Brush.Error" Color="{StaticResource Color.Error}" />
+            <SolidColorBrush x:Key="Brush.Warning" Color="{StaticResource Color.Warning}" />
+            <SolidColorBrush x:Key="Brush.Success" Color="{StaticResource Color.Success}" />
+        </ResourceDictionary>
+
+        <ResourceDictionary x:Key="Light">
+            <Color x:Key="Color.Background">#F0EFF8</Color>
+            <Color x:Key="Color.Sidebar">#E8E7F0</Color>
+            <Color x:Key="Color.Surface">#FFFFFF</Color>
+            <Color x:Key="Color.SurfaceAlt">#E8E7F0</Color>
+            <Color x:Key="Color.Primary">#6D28D9</Color>
+            <Color x:Key="Color.PrimaryHover">#7C3AED</Color>
+            <Color x:Key="Color.Secondary">#3C8527</Color>
+            <Color x:Key="Color.SecondaryHover">#4A9E32</Color>
+            <Color x:Key="Color.Accent">#52A535</Color>
+            <Color x:Key="Color.AccentGlow">#3C8527</Color>
+            <Color x:Key="Color.Border">#D0D0E0</Color>
+            <Color x:Key="Color.ForegroundMain">#1A1A2E</Color>
+            <Color x:Key="Color.ForegroundMuted">#555570</Color>
+            <Color x:Key="Color.ForegroundDim">#6A6A80</Color>
+            <Color x:Key="Color.Danger">#C0392B</Color>
+            <Color x:Key="Color.OnPrimary">#FFFFFF</Color>
+            <Color x:Key="Color.Error">#E74C3C</Color>
+            <Color x:Key="Color.Warning">#F39C12</Color>
+            <Color x:Key="Color.Success">#27AE60</Color>
+
+            <SolidColorBrush x:Key="Brush.Background" Color="{StaticResource Color.Background}" />
+            <SolidColorBrush x:Key="Brush.Sidebar" Color="{StaticResource Color.Sidebar}" />
+            <SolidColorBrush x:Key="Brush.Surface" Color="{StaticResource Color.Surface}" />
+            <SolidColorBrush x:Key="Brush.SurfaceAlt" Color="{StaticResource Color.SurfaceAlt}" />
+            <SolidColorBrush x:Key="Brush.Primary" Color="{StaticResource Color.Primary}" />
+            <SolidColorBrush x:Key="Brush.PrimaryHover" Color="{StaticResource Color.PrimaryHover}" />
+            <SolidColorBrush x:Key="Brush.Secondary" Color="{StaticResource Color.Secondary}" />
+            <SolidColorBrush x:Key="Brush.SecondaryHover" Color="{StaticResource Color.SecondaryHover}" />
+            <SolidColorBrush x:Key="Brush.Accent" Color="{StaticResource Color.Accent}" />
+            <SolidColorBrush x:Key="Brush.AccentGlow" Color="{StaticResource Color.AccentGlow}" />
+            <SolidColorBrush x:Key="Brush.Border" Color="{StaticResource Color.Border}" />
+            <SolidColorBrush x:Key="Brush.ForegroundMain" Color="{StaticResource Color.ForegroundMain}" />
+            <SolidColorBrush x:Key="Brush.ForegroundMuted" Color="{StaticResource Color.ForegroundMuted}" />
+            <SolidColorBrush x:Key="Brush.ForegroundDim" Color="{StaticResource Color.ForegroundDim}" />
+            <SolidColorBrush x:Key="Brush.Danger" Color="{StaticResource Color.Danger}" />
+            <SolidColorBrush x:Key="Brush.OnPrimary" Color="{StaticResource Color.OnPrimary}" />
+            <SolidColorBrush x:Key="Brush.Error" Color="{StaticResource Color.Error}" />
+            <SolidColorBrush x:Key="Brush.Warning" Color="{StaticResource Color.Warning}" />
+            <SolidColorBrush x:Key="Brush.Success" Color="{StaticResource Color.Success}" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

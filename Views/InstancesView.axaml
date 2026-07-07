@@ -1,0 +1,103 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:vm="using:NexusLauncher.ViewModels"
+                xmlns:models="using:NexusLauncher.Models"
+                x:Class="NexusLauncher.Views.InstancesView"
+                x:Name="root"
+                x:DataType="vm:InstancesViewModel">
+
+    <Grid RowDefinitions="Auto,Auto,*" Background="Transparent">
+        <!-- Header -->
+        <StackPanel Spacing="4" Margin="28,24,28,0">
+            <TextBlock Text="{Binding TitleLabel}" FontSize="22" FontWeight="Bold"
+                       Foreground="{DynamicResource Brush.ForegroundMain}" />
+            <TextBlock Text="{Binding SubtitleLabel}" FontSize="13"
+                       Foreground="{DynamicResource Brush.ForegroundMuted}" />
+        </StackPanel>
+
+        <!-- Search + New -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="12"
+              Margin="28,16,28,16">
+            <TextBox Text="{Binding SearchText, Mode=TwoWay}"
+                     PlaceholderText="{Binding SearchPlaceholder}" />
+            <Button Grid.Column="1" Content="{Binding NewButtonLabel}"
+                    Command="{Binding CreateInstanceCommand}"
+                    Classes="Primary" Padding="18,8" FontSize="13" />
+        </Grid>
+
+        <!-- Instances list -->
+        <ScrollViewer Grid.Row="2" Margin="28,0,28,28">
+            <Grid>
+                <StackPanel IsVisible="{Binding HasInstances}" Spacing="8">
+                    <ItemsControl ItemsSource="{Binding FilteredInstances}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><StackPanel Spacing="8" /></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:MinecraftInstance">
+                                <Border Background="{DynamicResource Brush.Surface}" BorderThickness="0">
+                                    <Grid ColumnDefinitions="100,*,Auto" ColumnSpacing="16">
+                                        <!-- Version badge -->
+                                        <Border Background="{DynamicResource Brush.SurfaceAlt}" Padding="0"
+                                                VerticalAlignment="Stretch">
+                                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="6">
+                                                <TextBlock Text="{Binding MinecraftVersion}" FontSize="15" FontWeight="Bold"
+                                                           Foreground="{DynamicResource Brush.ForegroundMain}"
+                                                           HorizontalAlignment="Center" />
+                                                <Border Classes="Badge" HorizontalAlignment="Center">
+                                                    <TextBlock Text="{Binding LoaderDisplay}" />
+                                                </Border>
+                                            </StackPanel>
+                                        </Border>
+                                        <!-- Info -->
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
+                                            <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="Bold"
+                                                       Foreground="{DynamicResource Brush.ForegroundMain}" />
+                                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                                <TextBlock Text="{Binding VersionDisplay}" FontSize="12"
+                                                           Foreground="{DynamicResource Brush.ForegroundDim}" />
+                                                <TextBlock Text="·" FontSize="12"
+                                                           Foreground="{DynamicResource Brush.ForegroundDim}" />
+                                                <TextBlock Text="{Binding CreatedAtText}" FontSize="12"
+                                                           Foreground="{DynamicResource Brush.ForegroundDim}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <!-- Actions -->
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8"
+                                                    VerticalAlignment="Center" Margin="0,0,16,0">
+                                            <Button Content="{Binding DataContext.PlayButtonLabel, ElementName=root}"
+                                                    Classes="Accent" Padding="14,8" MinWidth="72" FontSize="13"
+                                                    Command="{Binding DataContext.PlayInstanceCommand, ElementName=root}"
+                                                    CommandParameter="{Binding}" />
+                                            <Button Content="{Binding DataContext.RemoveButtonLabel, ElementName=root}"
+                                                    Classes="Danger" Padding="10,8" MinWidth="60" FontSize="12"
+                                                    Command="{Binding DataContext.DeleteInstanceCommand, ElementName=root}"
+                                                    CommandParameter="{Binding}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- Empty state -->
+                <StackPanel IsVisible="{Binding HasNoInstances}"
+                            VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20" Margin="24">
+                    <Border Width="64" Height="64" Background="{DynamicResource Brush.SurfaceAlt}"
+                            HorizontalAlignment="Center">
+                        <TextBlock Text="⚡" FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Nenhuma instância criada" FontSize="18" FontWeight="Bold"
+                                   Foreground="{DynamicResource Brush.ForegroundMuted}" HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding EmptyAction}" FontSize="13"
+                                   Foreground="{DynamicResource Brush.ForegroundDim}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                    <Button Content="{Binding NewButtonLabel}" Classes="Primary" Padding="24,10"
+                            Command="{Binding CreateInstanceCommand}" HorizontalAlignment="Center" FontSize="14" />
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

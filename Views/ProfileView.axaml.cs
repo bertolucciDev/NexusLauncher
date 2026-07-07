@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace NexusLauncher.Views;
 
-public partial class VersionsView : UserControl
+public partial class ProfileView : UserControl
 {
-    public VersionsView()
+    public ProfileView()
     {
         InitializeComponent();
     }

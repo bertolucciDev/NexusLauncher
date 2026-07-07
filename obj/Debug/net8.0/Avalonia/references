@@ -31,6 +31,8 @@ C:\Users\luiso\.nuget\packages\microcom.runtime\0.11.4\lib\net5.0\MicroCom.Runti
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\8.0.28\ref\net8.0\Microsoft.CSharp.dll
 C:\Users\luiso\.nuget\packages\microsoft.extensions.dependencyinjection.abstractions\8.0.0\lib\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\luiso\.nuget\packages\microsoft.extensions.logging.abstractions\8.0.0\lib\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\luiso\.nuget\packages\microsoft.identity.client\4.85.2\lib\net8.0\Microsoft.Identity.Client.dll
+C:\Users\luiso\.nuget\packages\microsoft.identitymodel.abstractions\8.14.0\lib\net8.0\Microsoft.IdentityModel.Abstractions.dll
 C:\Users\luiso\.nuget\packages\microsoft.io.recyclablememorystream\3.0.1\lib\net6.0\Microsoft.IO.RecyclableMemoryStream.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\8.0.28\ref\net8.0\Microsoft.VisualBasic.Core.dll
 C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\8.0.28\ref\net8.0\Microsoft.VisualBasic.dll
